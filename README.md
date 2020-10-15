@@ -2,6 +2,14 @@
 
 [![Build Status](https://travis-ci.com/slothsoft/sprint-simulation.svg?branch=master)](https://travis-ci.com/slothsoft/sprint-simulation)
 
+**Content:**
+
+- [Preface](#preface)
+- [Overview](#overview)
+- [Links](#links)
+
+
+# Preface
 
 Currently I've gotten into a lot of discussion over the question *"In scrum should we pre-assign tasks during sprint planning?"*. 
 
@@ -28,4 +36,14 @@ I have another suspicion why pre-assigning tasks is better, and that is our horr
 
 *This project was born to simulate sprint planning and execution, and figure out if you can estimate tasks as a group.*
 
+
+# Overview
+
+
+![class diagram](readme/class-diagram.png)
+
+
+# Links
+
+- [DrawIO](https://app.diagrams.net) - to create beautiful diagrams online
 
