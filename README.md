@@ -1,5 +1,8 @@
 # Sprint Simulation
 
+[![Build Status](https://travis-ci.com/slothsoft/sprint-simulation.svg?branch=master)](https://travis-ci.com/slothsoft/sprint-simulation)
+
+
 Currently I've gotten into a lot of discussion over the question *"In scrum should we pre-assign tasks during sprint planning?"*. 
 
 I'm absolutely for pre-assigning tasks, because:
