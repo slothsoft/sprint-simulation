@@ -14,6 +14,8 @@ import de.slothsoft.sprintsim.Task;
 
 public class SprintGeneratorTest {
 
+	private static final double DELTA = 0.001;
+
 	private SprintGenerator generator;
 
 	@Before
@@ -38,6 +40,7 @@ public class SprintGeneratorTest {
 		// the one member has 80h
 		Assert.assertTrue("Too few work hours assigned: " + planning.estimatedHours,
 				planning.getEstimatedHours() >= 80.0);
+		Assert.assertEquals(planning.getEstimatedHours() - 80, planning.getEstimatedAdditionalHours(), DELTA);
 
 		// on default the three types of task should have the same number
 		// 80 / (2 + 4 + 16) = 3.6, but it's random, so let's assume 2 of each

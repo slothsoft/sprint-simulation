@@ -24,8 +24,9 @@ public class SprintExecutor {
 
 	public SprintRetro execute(Sprint sprint) {
 		final List<Task> tasksToDo = new ArrayList<>(Arrays.asList(sprint.getTasks()));
-		tasksToDo.sort(Comparator.comparing(Task::getComplexity)); // we do long tasks
-																	// first
+		// we do long tasks first
+		// TODO: make this configurable?
+		tasksToDo.sort(Comparator.comparing(Task::getComplexity).reversed());
 
 		if (this.members.length == 0) return new SprintRetro(this.members, Double.NaN, Double.NaN);
 

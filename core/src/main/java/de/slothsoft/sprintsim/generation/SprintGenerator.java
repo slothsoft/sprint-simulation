@@ -12,6 +12,7 @@ import de.slothsoft.sprintsim.Task;
 import de.slothsoft.sprintsim.config.SprintConfig;
 import de.slothsoft.sprintsim.config.TaskConfig;
 import de.slothsoft.sprintsim.config.TaskCreator;
+import de.slothsoft.sprintsim.impl.ArrayToArrayMap;
 
 public class SprintGenerator {
 
@@ -27,17 +28,40 @@ public class SprintGenerator {
 	public SprintPlanning generate() {
 		final double targetWorkHours = Arrays.stream(this.members).mapToDouble(Member::getWorkHoursPerDay).sum()
 				* this.sprintConfig.getLengthInDays();
-		double entireWorkHours = 0;
 
+		double entireWorkHours = 0;
 		final List<Task> tasks = new ArrayList<>();
+		final List<double[]> taskEstimations = new ArrayList<>();
+		final List<Double> collectedTaskEstimations = new ArrayList<>();
+
 		while (entireWorkHours < targetWorkHours) {
 			final Task task = createTask();
-			final double hours = estimateTask(task);
+			final double[] hoursArray = estimateTask(task);
+			final double hours = collectEstimations(hoursArray);
 
+			taskEstimations.add(hoursArray);
+			collectedTaskEstimations.add(Double.valueOf(hours));
 			tasks.add(task);
 			entireWorkHours += hours;
 		}
-		return new SprintPlanning(new Sprint(tasks.toArray(new Task[tasks.size()])), targetWorkHours);
+
+		final Task[] tasksArray = tasks.toArray(new Task[tasks.size()]);
+		final ArrayToArrayMap<Task, ArrayToArrayMap<Member, Double>> taskEstimationsMap = createTaskEstimationsMap(
+				taskEstimations, tasksArray);
+		final ArrayToArrayMap<Task, Double> collectedTaskEstimationsMap = new ArrayToArrayMap<Task, Double>(tasksArray)
+				.values(collectedTaskEstimations.toArray(new Double[collectedTaskEstimations.size()]));
+
+		return new SprintPlanning(new Sprint(tasksArray), entireWorkHours,
+				Math.max(0, entireWorkHours - targetWorkHours), taskEstimationsMap, collectedTaskEstimationsMap);
+	}
+
+	private ArrayToArrayMap<Task, ArrayToArrayMap<Member, Double>> createTaskEstimationsMap(
+			final List<double[]> taskEstimations, final Task[] tasksArray) {
+		return new ArrayToArrayMap<Task, ArrayToArrayMap<Member, Double>>(tasksArray)
+				.values(taskEstimations.stream()
+						.map(e -> new ArrayToArrayMap<Member, Double>(this.members)
+								.values(Arrays.stream(e).boxed().toArray(Double[]::new)))
+						.toArray(ArrayToArrayMap[]::new));
 	}
 
 	Task createTask() {
@@ -55,12 +79,12 @@ public class SprintGenerator {
 		return new Task();
 	}
 
-	double estimateTask(Task task) {
+	double[] estimateTask(Task task) {
 		final double[] estimations = new double[this.members.length];
 		for (int i = 0; i < estimations.length; i++) {
 			estimations[i] = estimateTaskFromMember(task, this.members[i]);
 		}
-		return collectEstimations(estimations);
+		return estimations;
 	}
 
 	double estimateTaskFromMember(Task task, Member member) {
