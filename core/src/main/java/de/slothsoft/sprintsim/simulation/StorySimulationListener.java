@@ -1,18 +1,17 @@
 package de.slothsoft.sprintsim.simulation;
 
 import java.text.MessageFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import de.slothsoft.sprintsim.Member;
 import de.slothsoft.sprintsim.Task;
 import de.slothsoft.sprintsim.execution.SprintRetro;
 import de.slothsoft.sprintsim.generation.SprintPlanning;
 import de.slothsoft.sprintsim.impl.ArrayToArrayMap;
+import de.slothsoft.sprintsim.io.LogTableWriter;
+import de.slothsoft.sprintsim.io.Logger;
+import de.slothsoft.sprintsim.io.TaskWriter;
 
 public class StorySimulationListener implements SimulationListener {
 
@@ -20,9 +19,6 @@ public class StorySimulationListener implements SimulationListener {
 			"Hans", "Ike", "James", "Klaus", "Lars", "Markus", "Norbert", "Olaf", "Paul", "Quentin", "Ralf", "Steffi",
 			"Tony", "Ulf", "Viktor", "Wolfgang", "Xerox", "Yens", "Zack"};
 	private static final int FIRST_TASK = 31415;
-	private static final int COLUMN_SIZE = 15;
-	private static final String EMPTY_COLUMN = IntStream.range(0, COLUMN_SIZE).mapToObj(i -> " ")
-			.collect(Collectors.joining());
 
 	private String taskIdPrefix = "LIO";
 	private Logger logger = System.out::println;
@@ -62,46 +58,9 @@ public class StorySimulationListener implements SimulationListener {
 		this.taskNames = createTaskNames(sprintPlanning.getSprint().getTasks());
 
 		this.logger.logTitle("Sprint Planning");
-
-		// log title of table
-
-		final StringBuilder sb = new StringBuilder(EMPTY_COLUMN);
-		for (final Member member : this.memberNames.getKeys()) {
-			sb.append(createTableRightAligned(this.memberNames.getValue(member)));
-		}
-		sb.append(createTableRightAligned("All"));
-		this.logger.log(sb.toString());
-
-		// log rest of table
-
-		final NumberFormat format = NumberFormat.getIntegerInstance(Locale.ENGLISH);
-
-		for (final Task task : sprintPlanning.getSprint().getTasks()) {
-			sb.setLength(0);
-			sb.append(createTableLeftAligned(this.taskNames.getValue(task)));
-
-			for (final Member member : this.memberNames.getKeys()) {
-				final double estimation = sprintPlanning.getTaskEstimation(task, member);
-				sb.append(createTableRightAligned(format.format(estimation)));
-			}
-			sb.append(createTableRightAligned(format.format(sprintPlanning.getCollectedTaskEstimation(task))));
-			this.logger.log(sb.toString());
-		}
-
-		// log additional stuff
-
-		this.logger.logEmpty();
 		this.logger.log("Estimated Hours:  " + sprintPlanning.getEstimatedHours());
 		this.logger.log("Additional Hours: " + sprintPlanning.getEstimatedAdditionalHours());
 		this.logger.logEmpty();
-	}
-
-	private static String createTableLeftAligned(String value) {
-		return value + EMPTY_COLUMN.substring(0, Math.max(0, COLUMN_SIZE - value.length()));
-	}
-
-	private static String createTableRightAligned(String value) {
-		return EMPTY_COLUMN.substring(0, Math.max(0, COLUMN_SIZE - value.length())) + value;
 	}
 
 	private ArrayToArrayMap<Task, String> createTaskNames(Task[] tasks) {
@@ -119,13 +78,21 @@ public class StorySimulationListener implements SimulationListener {
 	@Override
 	public void sprintExecuted(SprintRetro sprintRetro) {
 		this.logger.logTitle("Sprint Retro");
+		this.logger.log("Remaining Hours: " + sprintRetro.getRemainingHours());
 		this.logger.log("Necessary Additional Hours: " + sprintRetro.getNecessaryAdditionalHours());
 		this.logger.logEmpty();
+
+		this.logger.logTitle("Tasks Overview");
+
+		final TaskWriter taskWriter = new TaskWriter(new LogTableWriter(this.logger));
+		taskWriter.setMemberNameSupplier(index -> this.memberNames.getValue(this.memberNames.getKeys()[index]));
+		taskWriter.setTaskNameSupplier(this.taskNames::getValue);
+		taskWriter.writeExecutionInfo(true).setWriteEstimationInfo(true);
+		taskWriter.writeTasks(sprintRetro.getSprint().getTasks());
 	}
 
 	@Override
 	public void simulationFinished(SimulationResult simulationResult) {
-		// nothing to do any more
 	}
 
 	public Logger getLogger() {

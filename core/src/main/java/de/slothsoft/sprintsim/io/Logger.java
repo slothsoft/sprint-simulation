@@ -1,4 +1,4 @@
-package de.slothsoft.sprintsim.simulation;
+package de.slothsoft.sprintsim.io;
 
 public interface Logger {
 

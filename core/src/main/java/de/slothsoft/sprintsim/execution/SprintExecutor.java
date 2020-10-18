@@ -15,6 +15,13 @@ import de.slothsoft.sprintsim.config.TaskConfig;
 
 public class SprintExecutor {
 
+	/** The member that executed a task - a <code>Member</code>. */
+	public static final String TASK_DATA_ASSIGNEE = "assignee";
+	/** The member that executed a task - an <code>int</code>. */
+	public static final String TASK_DATA_ASSIGNEE_INDEX = "assigneeIndex";
+	/** The time needed to executed a task - a <code>double</code>. */
+	public static final String TASK_DATA_NECESSARY_HOURS = "necessaryHours";
+
 	private Member[] members;
 	private TaskConfig taskConfig = new TaskConfig();
 
@@ -28,7 +35,7 @@ public class SprintExecutor {
 		// TODO: make this configurable?
 		tasksToDo.sort(Comparator.comparing(Task::getComplexity).reversed());
 
-		if (this.members.length == 0) return new SprintRetro(this.members, Double.NaN, Double.NaN);
+		if (this.members.length == 0) return new SprintRetro(sprint, this.members, Double.NaN, Double.NaN);
 
 		final double[] workHours = generateWorkHours(sprint.getLengthInDays());
 		for (final Task task : tasksToDo) {
@@ -39,12 +46,16 @@ public class SprintExecutor {
 			final double taskBaseHours = this.taskConfig.getHours(task.getComplexity());
 			final double taskHours = taskBaseHours * idleMember.getWorkPerformance().getMultiplicator(task);
 
+			task.addUserData(TASK_DATA_ASSIGNEE, idleMember);
+			task.addUserData(TASK_DATA_ASSIGNEE_INDEX, Integer.valueOf(indexOfIdleMember));
+			task.addUserData(TASK_DATA_NECESSARY_HOURS, Double.valueOf(taskHours));
+
 			// remove the hours
 			workHours[indexOfIdleMember] -= taskHours;
 		}
 		final double necessaryAdditionalHours = -DoubleStream.of(workHours).filter(d -> d < 0).sum();
 		final double remainingHours = DoubleStream.of(workHours).filter(d -> d > 0).sum();
-		return new SprintRetro(this.members, necessaryAdditionalHours, remainingHours);
+		return new SprintRetro(sprint, this.members, necessaryAdditionalHours, remainingHours);
 	}
 
 	double[] generateWorkHours(int lengthInDays) {

@@ -3,14 +3,17 @@ package de.slothsoft.sprintsim.execution;
 import java.util.Objects;
 
 import de.slothsoft.sprintsim.Member;
+import de.slothsoft.sprintsim.Sprint;
 
 public class SprintRetro {
 
+	final Sprint sprint;
 	final Member[] members;
 	final double necessaryAdditionalHours;
 	final double remainingHours;
 
-	SprintRetro(Member[] members, double necessaryAdditionalHours, double remainingHours) {
+	SprintRetro(Sprint sprint, Member[] members, double necessaryAdditionalHours, double remainingHours) {
+		this.sprint = Objects.requireNonNull(sprint);
 		this.members = Objects.requireNonNull(members);
 		this.necessaryAdditionalHours = necessaryAdditionalHours;
 		this.remainingHours = remainingHours;
@@ -42,6 +45,10 @@ public class SprintRetro {
 
 	public double getRemainingHours() {
 		return this.remainingHours;
+	}
+
+	public Sprint getSprint() {
+		return this.sprint;
 	}
 
 }
