@@ -14,7 +14,7 @@ public class SprintExecutorTest {
 
 	private static final double DELTA = 0.001;
 
-	// -- ZERO MEMBER --
+	// -- ZERO MEMBERS --
 
 	@Test
 	public void testNoMemberOneTask() throws Exception {

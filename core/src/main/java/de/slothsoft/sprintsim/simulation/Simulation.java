@@ -26,22 +26,35 @@ public class Simulation {
 	}
 
 	public SimulationResult runSprint() {
-		final SimulationInfo info = new SimulationInfo(this.members, this.taskConfig, this.sprintConfig);
+		return runMilestone(1);
+	}
+
+	
+	public SimulationResult runMilestone(int numberOfSprints) {
+		final SimulationInfo info = new SimulationInfo(this.members, this.taskConfig, this.sprintConfig, numberOfSprints);
 		fireListeners(listener -> listener.simulationStarted(info));
 
 		final SprintGenerator generator = createGenerator();
-		final SprintPlanning sprintPlanning = generator.generate();
-		fireListeners(listener -> listener.sprintPlanned(sprintPlanning));
-
 		final SprintExecutor executor = createExecutor();
-		final SprintRetro retro = executor.execute(sprintPlanning.getSprint());
-		fireListeners(listener -> listener.sprintExecuted(retro));
 
-		final SimulationResult result = new SimulationResult(sprintPlanning, retro);
+		SprintPlanning[] sprintPlannings = new SprintPlanning[numberOfSprints];
+		SprintRetro[] sprintRetros = new SprintRetro[numberOfSprints];
+		
+		for (int sprintNumber = 0; sprintNumber < numberOfSprints; sprintNumber++) {
+			final SprintPlanning sprintPlanning = generator.generate();
+			fireListeners(listener -> listener.sprintPlanned(sprintPlanning));
+			sprintPlannings[sprintNumber] = sprintPlanning;
+
+			final SprintRetro retro = executor.execute(sprintPlanning.getSprint());
+			fireListeners(listener -> listener.sprintExecuted(retro));
+			sprintRetros[sprintNumber] = retro;
+		}
+
+		final SimulationResult result = new SimulationResult(sprintPlannings, sprintRetros);
 		fireListeners(listener -> listener.simulationFinished(result));
-		return result;
+		return result; 
 	}
-
+	
 	private SprintGenerator createGenerator() {
 		return new SprintGenerator(this.members).taskConfig(this.taskConfig).sprintConfig(this.sprintConfig);
 	}

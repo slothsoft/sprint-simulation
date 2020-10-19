@@ -13,7 +13,7 @@ import de.slothsoft.sprintsim.io.LogTableWriter;
 import de.slothsoft.sprintsim.io.Logger;
 import de.slothsoft.sprintsim.io.TaskWriter;
 
-public class StorySimulationListener implements SimulationListener {
+public class LoggingSimulationListener implements SimulationListener {
 
 	private static final String[] MEMBER_NAMES = {"Angie", "Bert", "Charles", "David", "Emil", "Francis", "Gert",
 			"Hans", "Ike", "James", "Klaus", "Lars", "Markus", "Norbert", "Olaf", "Paul", "Quentin", "Ralf", "Steffi",
@@ -99,7 +99,7 @@ public class StorySimulationListener implements SimulationListener {
 		return this.logger;
 	}
 
-	public StorySimulationListener logger(Logger newLogger) {
+	public LoggingSimulationListener logger(Logger newLogger) {
 		setLogger(newLogger);
 		return this;
 	}
@@ -112,7 +112,7 @@ public class StorySimulationListener implements SimulationListener {
 		return this.taskIdPrefix;
 	}
 
-	public StorySimulationListener taskIdPrefix(String newTaskIdPrefix) {
+	public LoggingSimulationListener taskIdPrefix(String newTaskIdPrefix) {
 		setTaskIdPrefix(newTaskIdPrefix);
 		return this;
 	}

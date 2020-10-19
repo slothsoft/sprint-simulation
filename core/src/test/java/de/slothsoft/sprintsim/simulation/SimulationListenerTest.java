@@ -39,7 +39,7 @@ public class SimulationListenerTest {
 
 		// Assert
 		Assert.assertNotNull(listenerArgument[0]);
-		Assert.assertSame(result.getPlanning(), listenerArgument[0]);
+		Assert.assertSame(result.getPlannings()[0], listenerArgument[0]);
 	}
 
 	@Test
@@ -110,7 +110,7 @@ public class SimulationListenerTest {
 
 		// Assert
 		Assert.assertNotNull(listenerArgument[0]);
-		Assert.assertSame(result.getRetro(), listenerArgument[0]);
+		Assert.assertSame(result.getRetros()[0], listenerArgument[0]);
 	}
 
 	@Test

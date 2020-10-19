@@ -15,7 +15,7 @@
 
 # Preface
 
-Currently I've gotten into a lot of discussion over the question *"In scrum should we pre-assign tasks during sprint planning?"*. 
+Currently, I've gotten into a lot of discussions over the question: *"In scrum should we pre-assign tasks during sprint planning?"*
 
 I'm absolutely **for** pre-assigning tasks, because:
 
@@ -24,19 +24,19 @@ I'm absolutely **for** pre-assigning tasks, because:
 - It's more efficient (just give the task to whoever estimates the fastest time)
 - It makes the planning faster (everybody has to understand only their own tasks, and team members can even prepare for that)
 - Many bugs are already implicitly pre-assigned, because team members are expert in different things
-- You don't double book people (e.g. by adding two tasks that can only be done by one person efficiently, when each of them alone would fill the time of that person completely)
+- You don't double book people (e.g. by adding two tasks that can only be done by one person efficiently, when each of them alone would fill out the time of that person completely)
 
 My team is against it, because:
 
-1. It's not failsafe (if a member can't participate in the sprint, nobody can take on their tasks)
+1. It's not fail-safe (if a member can't participate in the sprint, nobody can take on their tasks)
 
 (I don't think there was ever a second argument.)
 
 And just to address this:
 
-1. "Nobody can take on their tasks" - this is exactly what happens in our team. And we don't pre-assign. It's just that implicitly assigned tasks will not be done by anybody else. For good reason. If the expert is back next sprint, why should I half-ass their tasks?
+1. "Nobody can take on their tasks" - this is exactly what happens in our team. And we don't pre-assign. It's just that nobody will do implicitly assigned tasks. For good reason. If the expert can do it next sprint, why should I half-ass their tasks?
 
-I have another suspicion why pre-assigning tasks is better, and that is our horrible estimations. It's clear that you never learn to estimate if you can't practice, so in that regard pre-assignments are already better. However I have a hunch that even with good estimations it won't work if multiple people estimate, and only one of those does the task.
+I have another suspicion why pre-assigning tasks is better, and that is our horrible estimations. It's clear that you never learn to estimate if you can't practice, so in that regard pre-assignments are already better. However, I have a hunch that even with good estimations it won't work if multiple people estimate, and only one of those does the task.
 
 *This project was born to simulate sprint planning and execution, and figure out if you can estimate tasks as a group.*
 
@@ -67,21 +67,23 @@ This project makes some assumptions:
 1. The team **`Member`s** get together
 2. A **`Task`s** is created from the never-ending task machine (see [TaskCreator])(core/src/main/java/de/slothsoft/sprintsim/config/TaskCreator.java)
 3. Each team member estimates how long it will take to do the task (for *them*) - for that they take the time it *will* take them to do the task, and use a Gaussian curve capped at their `estimationDeviation` to add a bit of variance; on average this means they will estimate correctly
-4. A operation is used to get the team's estimation from the member's (average right now)
-5. If there is still hours left in the **`Sprint`** start again at 2.
+4. Am operation is used to get the team's estimation from the member's (average right now)
+5. If there is still hours left in the **`Sprint`**, start again at 2.
 
 
 ## Execution    
+
+*(See [SprintExecutor](core/src/main/java/de/slothsoft/sprintsim/execution/SprintExecutor.java))*
     
 1. The team **`Member`s** and **`Task`s** get together
 2. Tasks are sorted by complexity, so longer tasks are done earlier
 3. Each task is assigned to the team member who has the most time open to do it
-4. The team member tracks does the task and tracks their time
+4. The team member does the task and tracks their time
     
     
 # Results
 
-To run a single sprint with its information printed on the console, use (SimpleStoryExample)[examples/src/main/java/SimpleStoryExample.java]. This will print something like this:
+To run a single sprint with its information printed on the console, use [SimpleSprintExample](examples/src/main/java/SimpleSprintExample.java). This will print something like this:
 
 ```
 Team Members
@@ -104,11 +106,13 @@ Remaining Hours: 40.19999999999999
 Necessary Additional Hours: -0.0
 ```
 
+*(**Note:** the results shown are random, but representative examples are shown.)*
+
 Interesting! Our three full-time team members estimated they'd need 240 hours to do their sprint (what a precision!), but had 40 hours left at the end of it. 
 
 That is not at all what I was expecting. 
 
-To analyze let's have a look at the task overview (`SimpleStoryExample.java` will print this, too):
+To analyze why let's have a look at the task overview (`SimpleSprintExample.java` will print this, too):
 
 |           | Angie |  Bert | Charles |  All  | Assignee | Necessary Time | 
 | --------- | ---: | -----: | -----: | -----: | ------- | ---: |
@@ -141,11 +145,11 @@ To analyze let's have a look at the task overview (`SimpleStoryExample.java` wil
 | LIO-31441 |  5.6 |    7.2 | 15.038 |  9.279 | Angie   |  5.6 |
 | LIO-31442 |  1.4 |   2.14 |  4.222 |  2.587 | Angie   |  1.4 |
 
-Let's analyze our team members first:
+Let's take a look at our team members first:
 
 - **Angie** finishes tasks in 70% of the hours and is a perfect guesser
-- **Bert** finishes tasks in 100% of the hours and guesses with 10% derivation
-- **Charles** finishes tasks in 200% of the hours and guesses with 50% derivation
+- **Bert** finishes tasks in 100% of the hours and guesses with 10% deviation
+- **Charles** finishes tasks in 200% of the hours and guesses with 50% deviation
 
 The interesting tasks are:
 
@@ -155,7 +159,9 @@ The interesting tasks are:
 - **LIO-31421** - Charles needs his time with the issue → 9 hours ➕
 - ...
 
-In summary: every time Charles does a task, he needs a lot more time than estimated, Bert's time is about correct and Angie needs a lot less time than estimated. But since Angie can do a lot more tasks than Charles her faster time sums up.
+In summary: every time Charles does a task, he needs a lot more time than estimated, Bert's time is a bit better than the estimate and Angie needs a lot less time than estimated. But since Angie can do a lot more tasks than Charles her faster time sums up.
+
+Mathematically speaking, both Angie and Bert are twice as fast as Charles. From their tasks, the additional hours of half of them are needed to allow Charles to work at his slower speed. So the additional hours of the other half is what makes up the "remaining hours".
 
 With that knowledge we can construct another example where the team won't have this many hours remaining at the end of the sprint - we'll give Angie a second project to work on and Bert a child that makes him want to work part-time:
 
@@ -182,19 +188,56 @@ Remaining Hours: 0.800000000000002
 Necessary Additional Hours: -0.0
 ```
 
-Now sprints will finish in about the time the three of them estimated. (With a bit of variance - sometimes they will have 10 hours remaining, but other times they will need additionally 10 hours.)
+Now sprints will finish in the time the three of them estimated, because the two faster team members will do about the same number of tasks than the slower one. (With a bit of variance - sometimes they will have 10 hours remaining, but other times they will need additionally 10 hours.)
 
+Honestly, at this point, I am sure estimating together should work, because: Charles needs double the time of the two other members, his vote will increase the average by 30%. If he does 1/3rd of the tasks, this will add up in the 100% necessary for him to finish the task. Since he is so much slower, he can't even do 1/3rd of the task, so these additional hours will sum up so the team should finish much earlier then planned.
 
+This is surprising, because ever since I joined a team that estimates together, we did not even finish one single sprint on time. 
+
+**So why does that not work for us?**
+
+Because Charles is not the perfect guesser this simulation made him. In fact after estimating two tasks with Angie and Bert he is very good in guessing the same numbers as them - even if he takes a lot more time. Since you do not compare estimations at the end of the sprint (and there is no way you could do that realistically), his behavior has no consequences. 
+
+Charles acts like this:
+
+```java
+Member charles = Member.createJunior().workPerformance(task -> {
+	// we are in sprint planning, so just guess what Angie and Bert guess
+	if (task.getUserData(SprintGenerator.TASK_DATA_COLLECTED_ESTIMATION) == null) return 1;
+	// now I'm actually working on it, but I'm slooow
+	return 2.0;
+});
+```
+
+Now the team members guess about the same value, but Charles still takes double the time. Every hour he works costs the team 30min they never estimated. Since he works 80h in a sprint, the team needs about 40h after each sprint to clean up Charles's mess.
+
+```
+Sprint Planning
+===============
+
+Estimated Hours:  251.91424667361778
+Additional Hours: 11.914246673617782
+
+Sprint Retro
+============
+
+Remaining Hours: 0.0
+Necessary Additional Hours: 47.20000000000001
+```
+
+Really, team? It's not a good idea to plan a sprint with 12 more hours than possible with somebody like Charles. But the simulation proofs the theory.
 
 
 
 # Real Life  
 
-This is just a simulation, and humans don't act like computer programs. So in reality, these problems additionally arise:
+This is just a simulation, and humans don't act like computer programs. So in reality, these problems (additionally) arise:
     
-- of course, most glaringly, you can't calculate hours from story points (but somehow we have to create different-lengh tasks)
+- of course, most glaringly, you can't calculate hours from story points (but somehow we have to create different-length tasks)
 - most of them time, team members will not estimate correctly on average; from what I've seen, even skilled team members will (almost) always over-estimate or under-estimate, even if only by a little
 - junior members (and others with little knowledge of a task at hand) will usually not estimate their needed time, but try to stay close to their peers; often this is enforced by the group (this is a conversation I actually had when I estimated my *needed* time: "Why would you estimate so much more than us?" - "Because I've never heard of the technology before and I'll need some time to learn it." - "But it's easy!" - "So... you want me to use your estimation?" - "Yes.")
+- the performance of a team member is not fix - their health, the day of the week, the hour of the day, distractions, etc. change their needed time
+- another thing that changes the "needed time" is the "estimated time" - if a team member is a lot faster than estimated, they might use the remaining time to do something else that is related; if they are a lot slower they might be able to rush things or "outsource" parts of the task into other tasks
 
 
 

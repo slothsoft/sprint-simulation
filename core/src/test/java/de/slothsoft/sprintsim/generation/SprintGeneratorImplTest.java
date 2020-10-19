@@ -10,8 +10,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.slothsoft.sprintsim.Complexity;
-import de.slothsoft.sprintsim.Task;
 import de.slothsoft.sprintsim.Member;
+import de.slothsoft.sprintsim.Task;
+import de.slothsoft.sprintsim.config.SprintConfig;
+import de.slothsoft.sprintsim.config.TaskCreator;
 
 /**
  * "Impl" tests check implementation specific methods.
@@ -32,13 +34,40 @@ public class SprintGeneratorImplTest {
 	}
 
 	@Test
+	public void testSetMembers() throws Exception {
+		final Member[] members = {Member.createNormal(), Member.createSenior()};
+		this.generator.setMembers(members);
+		Assert.assertArrayEquals(members, this.generator.getMembers());
+	}
+
+	@Test
+	public void testMembers() throws Exception {
+		final Member[] members = {Member.createNormal(), Member.createSenior()};
+		this.generator.members(members);
+		Assert.assertArrayEquals(members, this.generator.getMembers());
+	}
+
+	@Test
+	public void testSetSprintConfig() throws Exception {
+		final SprintConfig sprintConfig = new SprintConfig(new TaskCreator());
+		this.generator.setSprintConfig(sprintConfig);
+		Assert.assertSame(sprintConfig, this.generator.getSprintConfig());
+	}
+
+	@Test
+	public void testSprintConfig() throws Exception {
+		final SprintConfig sprintConfig = new SprintConfig(new TaskCreator());
+		this.generator.sprintConfig(sprintConfig);
+		Assert.assertSame(sprintConfig, this.generator.getSprintConfig());
+	}
+
+	@Test
 	public void testCreateTask() throws Exception {
 		// Arrange
 		this.generator.setMembers(Member.createNormal());
 
 		// Act
-		final Task[] tasks = IntStream.range(0, 100).mapToObj(i -> this.generator.createTask())
-				.toArray(Task[]::new);
+		final Task[] tasks = IntStream.range(0, 100).mapToObj(i -> this.generator.createTask()).toArray(Task[]::new);
 
 		// Assert
 
@@ -56,6 +85,23 @@ public class SprintGeneratorImplTest {
 
 	private static Task[] findTasks(Task[] tasks, Predicate<Task> filter) {
 		return Arrays.stream(tasks).filter(filter).toArray(Task[]::new);
+	}
+
+	@Test
+	public void testCreateTaskDefault() throws Exception {
+		// Arrange
+		this.generator.setMembers(Member.createNormal());
+		this.generator.setSprintConfig(new SprintConfig());
+
+		final Task defaultTask = new Task();
+
+		// Act
+		final Task[] tasks = IntStream.range(0, 100).mapToObj(i -> this.generator.createTask()).toArray(Task[]::new);
+
+		// Assert
+		for (final Task task : tasks) {
+			Assert.assertEquals(defaultTask.getComplexity(), task.getComplexity());
+		}
 	}
 
 	@Test

@@ -133,6 +133,8 @@ public class ArrayToArrayMapTest {
 		next = it.next();
 		Assert.assertEquals("T", next.getKey());
 		Assert.assertEquals(Integer.valueOf(3), next.getValue());
+
+		Assert.assertFalse(it.hasNext());
 	}
 
 	@Test

@@ -3,15 +3,15 @@ package de.slothsoft.sprintsim.simulation;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class StorySimulationListenerTest {
+public class LoggingSimulationListenerTest {
 
-	StorySimulationListener listener = new StorySimulationListener();
+	LoggingSimulationListener listener = new LoggingSimulationListener();
 
 	@Test
 	public void testCreateMemberName() throws Exception {
-		Assert.assertEquals("Angie", StorySimulationListener.createMemberName(0));
-		Assert.assertEquals("Steffi", StorySimulationListener.createMemberName(18));
-		Assert.assertEquals("David 2", StorySimulationListener.createMemberName(29));
+		Assert.assertEquals("Angie", LoggingSimulationListener.createMemberName(0));
+		Assert.assertEquals("Steffi", LoggingSimulationListener.createMemberName(18));
+		Assert.assertEquals("David 2", LoggingSimulationListener.createMemberName(29));
 	}
 
 	@Test

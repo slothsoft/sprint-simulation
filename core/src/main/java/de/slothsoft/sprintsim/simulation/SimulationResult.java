@@ -1,29 +1,24 @@
 package de.slothsoft.sprintsim.simulation;
 
-import de.slothsoft.sprintsim.Sprint;
 import de.slothsoft.sprintsim.execution.SprintRetro;
 import de.slothsoft.sprintsim.generation.SprintPlanning;
 
 public class SimulationResult {
 
-	SprintPlanning planning;
-	SprintRetro retro;
+	SprintPlanning[] plannings;
+	SprintRetro[] retros;
 
-	SimulationResult(SprintPlanning planning, SprintRetro retro) {
-		this.planning = planning;
-		this.retro = retro;
+	SimulationResult(SprintPlanning[] plannings, SprintRetro[] retros) {
+		this.plannings = plannings;
+		this.retros = retros;
 	}
 
-	public Sprint getSprint() {
-		return this.planning.getSprint();
+	public SprintPlanning[] getPlannings() {
+		return this.plannings;
 	}
 
-	public SprintPlanning getPlanning() {
-		return this.planning;
-	}
-
-	public SprintRetro getRetro() {
-		return this.retro;
+	public SprintRetro[] getRetros() {
+		return this.retros;
 	}
 
 }

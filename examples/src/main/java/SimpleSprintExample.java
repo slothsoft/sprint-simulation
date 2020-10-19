@@ -1,9 +1,9 @@
 
 import de.slothsoft.sprintsim.Member;
 import de.slothsoft.sprintsim.simulation.Simulation;
-import de.slothsoft.sprintsim.simulation.StorySimulationListener;
+import de.slothsoft.sprintsim.simulation.LoggingSimulationListener;
 
-public class SimpleStoryExample {
+public class SimpleSprintExample {
 
 	public static void main(String[] args) {
 		final Member senior = Member.createSenior();
@@ -11,7 +11,7 @@ public class SimpleStoryExample {
 		final Member junior = Member.createJunior();
 
 		final Simulation simulation = new Simulation(senior, normal, junior);
-		simulation.addSimulationListener(new StorySimulationListener());
+		simulation.addSimulationListener(new LoggingSimulationListener());
 		simulation.runSprint();
 	}
 }
