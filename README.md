@@ -23,7 +23,7 @@ I'm absolutely **for** pre-assigning tasks, because:
 - It's fairer ("You do this ugly bug, and I'll do that one.")
 - It's more efficient (just give the task to whoever estimates the fastest time)
 - It makes the planning faster (everybody has to understand only their own tasks, and team members can even prepare for that)
-- Many bugs are already implicitly pre-assigned, because team members are expert in different things
+- Many bugs are already implicitly pre-assigned, because team members are experts in different things
 - You don't double book people (e.g. by adding two tasks that can only be done by one person efficiently, when each of them alone would fill out the time of that person completely)
 
 My team is against it, because:
@@ -190,13 +190,13 @@ Necessary Additional Hours: -0.0
 
 Now sprints will finish in the time the three of them estimated, because the two faster team members will do about the same number of tasks than the slower one. (With a bit of variance - sometimes they will have 10 hours remaining, but other times they will need additionally 10 hours.)
 
-Honestly, at this point, I am sure estimating together should work, because: Charles needs double the time of the two other members, his vote will increase the average by 30%. If he does 1/3rd of the tasks, this will add up in the 100% necessary for him to finish the task. Since he is so much slower, he can't even do 1/3rd of the task, so these additional hours will sum up so the team should finish much earlier then planned.
+So if each member gets the same weight in the estimations, but does not work the same number of tasks, estimating together *can not work*. The team tends to be faster than the estimation.
 
-This is surprising, because ever since I joined a team that estimates together, we did not even finish one single sprint on time. 
+This is surprising, because ever since I joined a team that estimates together, we did not finish one single sprint on time. 
 
 **So why does that not work for us?**
 
-Because Charles is not the perfect guesser this simulation made him. In fact after estimating two tasks with Angie and Bert he is very good in guessing the same numbers as them - even if he takes a lot more time. Since you do not compare estimations at the end of the sprint (and there is no way you could do that realistically), his behavior has no consequences. 
+Because Charles is not the perfect guesser this simulation made him. In fact, after estimating two tasks with Angie and Bert he is very good in guessing the same numbers as them - even if he takes a lot more time. Since you do not compare estimations at the end of the sprint (and there is no way you could do that realistically), his behavior has no consequences. 
 
 Charles acts like this:
 
@@ -227,6 +227,30 @@ Necessary Additional Hours: 47.20000000000001
 
 Really, team? It's not a good idea to plan a sprint with 12 more hours than possible with somebody like Charles. But the simulation proofs the theory.
 
+**How do you know this is what is happening?**
+
+This is a conversation I actually had when I estimated my *needed* time: 
+
+- **Team:** "Why would you estimate so much more than us?" 
+- **I:** "Because I've never heard of the technology before and I'll need some time to learn it."
+- **Team:** "But it's easy!" 
+- **I:** "So... you want me to use your estimation?"
+- **Team:** "Yes."
+
+This might be because the team doesn't know much about scrum, but I've seen it time and time again: junior members (and others with little knowledge of a task at hand) will usually not estimate their needed time, but try to stay close to their peers. This is often enforced by the team, which mistakenly asks the same questions as for their story point estimation (where it is absolutely okay and even preferred to have everybody guess the same value).
+
+How do we fix this?
+
+I have honestly no practical idea. It should be clear to forbid questions towards the time estimations, even if the estimation is a lot off. But this would work against the case were one or many team members did not understand the task correctly.
+
+Since the entire estimation only works if individual members estimate well, this should be trained. For this you would need to make team members find their original estimation and see how much off they were eventually. For this purpose they should ignore the team estimate. Which of course makes monitoring the tasks hard.
+
+But honestly: *I* estimated I need 10 hours for a task, 4 team members estimated 30min each - which is an average of 2h 30min. Why do I have to beg for the remaining 7h if I never agreed to do it in that time? But that is what is happening again and again. And the team members wouldn't be able to do this in 30min either - they just don't care because they know they won't be doing that task.
+
+Which is, in short, the entire reason why team estimations do not work.
+
+There is one solution that works, but that is not really practical: use teams were everybody has a similar performance. That way estimations that stay just close to the group won't cost the team too much time.
+
 
 
 # Real Life  
@@ -235,9 +259,14 @@ This is just a simulation, and humans don't act like computer programs. So in re
     
 - of course, most glaringly, you can't calculate hours from story points (but somehow we have to create different-length tasks)
 - most of them time, team members will not estimate correctly on average; from what I've seen, even skilled team members will (almost) always over-estimate or under-estimate, even if only by a little
-- junior members (and others with little knowledge of a task at hand) will usually not estimate their needed time, but try to stay close to their peers; often this is enforced by the group (this is a conversation I actually had when I estimated my *needed* time: "Why would you estimate so much more than us?" - "Because I've never heard of the technology before and I'll need some time to learn it." - "But it's easy!" - "So... you want me to use your estimation?" - "Yes.")
 - the performance of a team member is not fix - their health, the day of the week, the hour of the day, distractions, etc. change their needed time
 - another thing that changes the "needed time" is the "estimated time" - if a team member is a lot faster than estimated, they might use the remaining time to do something else that is related; if they are a lot slower they might be able to rush things or "outsource" parts of the task into other tasks
+
+
+
+# Conclusion
+
+It is not possible to estimate as a team if the actual work performance varies a lot, the team members shame each other from voting a higher time and if nobody checks the individual estimation (instead of the team estimation) versus actual needed time.
 
 
 
