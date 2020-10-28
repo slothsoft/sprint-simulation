@@ -10,6 +10,8 @@
     - [Execution](#execution) 
 - [Results](#results)
 - [Real Life](#real-life)
+- [Conclusion](#conclusion)
+- [To Do List](#to-do-list)
 - [Links](#links)
 
 
@@ -268,6 +270,13 @@ This is just a simulation, and humans don't act like computer programs. So in re
 
 It is not possible to estimate as a team if the actual work performance varies a lot, the team members shame each other from voting a higher time and if nobody checks the individual estimation (instead of the team estimation) versus actual needed time.
 
+
+
+# To Do List
+
+- there are still some TODOs in the code that needs evaluation
+- there should be a bunch more listeners, so I can create a "story" mode
+- I want to create a vaadin app from this
 
 
 # Links

@@ -143,4 +143,11 @@ public class ArrayToArrayMapTest {
 
 		Assert.assertArrayEquals(new String[]{"U", "V", "W"}, map.getKeys());
 	}
+
+	@Test
+	public void testGetKeysEmpty() throws Exception {
+		final ArrayToArrayMap<String, Integer> map = new ArrayToArrayMap<>();
+
+		Assert.assertArrayEquals(new String[0], map.getKeys());
+	}
 }

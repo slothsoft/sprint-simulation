@@ -18,6 +18,7 @@ public class Simulation {
 	private Member[] members;
 	private TaskConfig taskConfig = new TaskConfig();
 	private SprintConfig sprintConfig = SprintConfig.createDefault();
+	private Long seed;
 
 	private final List<SimulationListener> simulationListeners = new ArrayList<>();
 
@@ -55,11 +56,11 @@ public class Simulation {
 		return result; 
 	}
 	
-	private SprintGenerator createGenerator() {
-		return new SprintGenerator(this.members).taskConfig(this.taskConfig).sprintConfig(this.sprintConfig);
+	SprintGenerator createGenerator() {
+		return new SprintGenerator(this.members).taskConfig(this.taskConfig).sprintConfig(this.sprintConfig).seed(this.seed);
 	}
 
-	private SprintExecutor createExecutor() {
+	SprintExecutor createExecutor() {
 		return new SprintExecutor(this.members).taskConfig(this.taskConfig);
 	}
 
@@ -117,4 +118,19 @@ public class Simulation {
 		this.sprintConfig = Objects.requireNonNull(sprintConfig);
 	}
 
+	public Long getSeed() {
+		return seed;
+	}
+
+	public Simulation seed(Long newSeed) {
+		setSeed(newSeed);
+		return this;
+	}
+	
+
+	public void setSeed(Long seed) {
+		this.seed = seed;
+	}
+
+	
 }

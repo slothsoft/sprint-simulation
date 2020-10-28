@@ -58,16 +58,17 @@ public class ArrayToArrayMap<K, V> implements Iterable<Entry<K, V>> {
 
 	private String elementName = "element";
 	final List<K> keys;
+	final K[] keysAsArray;
 	V[] values;
 
 	@SuppressWarnings("unchecked")
 	public ArrayToArrayMap(K... keysAsArray) {
+		this.keysAsArray =  Objects.requireNonNull(keysAsArray);
 		this.keys = Arrays.asList(keysAsArray);
 	}
 
-	@SuppressWarnings("unchecked")
 	public K[] getKeys() {
-		return this.keys.toArray((K[]) Array.newInstance(this.keys.get(0).getClass(), this.keys.size()));
+		return Arrays.copyOf(keysAsArray, keysAsArray.length);
 	}
 
 	@Override

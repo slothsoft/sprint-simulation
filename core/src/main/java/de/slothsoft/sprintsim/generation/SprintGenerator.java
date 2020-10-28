@@ -21,7 +21,8 @@ public class SprintGenerator {
 	public static final String TASK_DATA_COLLECTED_ESTIMATION = "collectedEstimation";
 
 	private Member[] members;
-	Random rnd = new Random();
+	private Long seed;
+	private Random rnd = new Random();
 	private TaskConfig taskConfig = new TaskConfig();
 	private SprintConfig sprintConfig = SprintConfig.createDefault();
 
@@ -126,5 +127,22 @@ public class SprintGenerator {
 	public void setSprintConfig(SprintConfig sprintConfig) {
 		this.sprintConfig = Objects.requireNonNull(sprintConfig);
 	}
+
+	public Long getSeed() {
+		return seed;
+	}
+
+	public SprintGenerator seed(Long newSeed) {
+		setSeed(newSeed);
+		return this;
+	}
+	
+
+	public void setSeed(Long seed) {
+		this.seed = seed;
+		this.rnd = seed == null ? new Random() : new Random(seed.longValue());
+	}
+	
+	
 
 }

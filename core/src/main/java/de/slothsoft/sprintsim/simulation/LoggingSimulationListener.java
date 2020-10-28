@@ -1,7 +1,6 @@
 package de.slothsoft.sprintsim.simulation;
 
-import java.text.MessageFormat;
-import java.util.Map.Entry;
+import java.util.Arrays;
 import java.util.Objects;
 
 import de.slothsoft.sprintsim.Member;
@@ -9,9 +8,7 @@ import de.slothsoft.sprintsim.Task;
 import de.slothsoft.sprintsim.execution.SprintRetro;
 import de.slothsoft.sprintsim.generation.SprintPlanning;
 import de.slothsoft.sprintsim.impl.ArrayToArrayMap;
-import de.slothsoft.sprintsim.io.LogTableWriter;
 import de.slothsoft.sprintsim.io.Logger;
-import de.slothsoft.sprintsim.io.TaskWriter;
 
 public class LoggingSimulationListener implements SimulationListener {
 
@@ -25,17 +22,21 @@ public class LoggingSimulationListener implements SimulationListener {
 
 	private ArrayToArrayMap<Member, String> memberNames;
 	private ArrayToArrayMap<Task, String> taskNames;
+	
+	private SimulationListener loggingDelegator;
 
 	@Override
 	public void simulationStarted(SimulationInfo simulationInfo) {
+		this.taskNames = new ArrayToArrayMap<Task, String>();
 		this.memberNames = createMemberNames(simulationInfo.getMembers());
 
-		this.logger.logTitle("Team Members");
-		for (final Entry<Member, String> member : this.memberNames) {
-			this.logger.log(MessageFormat.format("{0} ({1}, {2}h)", member.getValue(),
-					member.getKey().getWorkPerformance(), String.valueOf(member.getKey().getWorkHoursPerDay())));
+		if (simulationInfo.getNumberOfSprints() == 1) {
+			this.loggingDelegator = new LoggingOneSprintSimulationListener(this.memberNames).logger(this.logger).taskNameSupplier(task -> this.taskNames.getValue(task));
+		} else {
+			this.loggingDelegator = new LoggingSprintsSimulationListener(this.memberNames).logger(this.logger).taskNameSupplier(task -> this.taskNames.getValue(task));
 		}
-		this.logger.logEmpty();
+		
+		this.loggingDelegator.simulationStarted(simulationInfo);
 	}
 
 	private static ArrayToArrayMap<Member, String> createMemberNames(Member[] members) {
@@ -55,20 +56,21 @@ public class LoggingSimulationListener implements SimulationListener {
 
 	@Override
 	public void sprintPlanned(SprintPlanning sprintPlanning) {
-		this.taskNames = createTaskNames(sprintPlanning.getSprint().getTasks());
-
-		this.logger.logTitle("Sprint Planning");
-		this.logger.log("Estimated Hours:  " + sprintPlanning.getEstimatedHours());
-		this.logger.log("Additional Hours: " + sprintPlanning.getEstimatedAdditionalHours());
-		this.logger.logEmpty();
+		appendTaskNames(sprintPlanning.getSprint().getTasks());
+		this.loggingDelegator.sprintPlanned(sprintPlanning);
 	}
 
-	private ArrayToArrayMap<Task, String> createTaskNames(Task[] tasks) {
-		final String[] taskNamesArray = new String[tasks.length];
+	private void appendTaskNames(Task[] tasks) {
+		int startIndex = this.taskNames.getKeys().length;
+		final Task[] tasksArray = Arrays.copyOf(taskNames.getKeys(), startIndex + tasks.length);
+		final String[] taskNamesArray = taskNames.getValues() == null ? new String[tasks.length] : Arrays.copyOf(taskNames.getValues(), tasksArray.length);
+		
 		for (int i = 0; i < tasks.length; i++) {
-			taskNamesArray[i] = createTaskName(i);
+			tasksArray[startIndex + i] = tasks[i];
+			taskNamesArray[startIndex + i] = createTaskName(startIndex + i);
 		}
-		return new ArrayToArrayMap<Task, String>(tasks).values(taskNamesArray);
+
+		this.taskNames = new ArrayToArrayMap<Task, String>(tasksArray).values(taskNamesArray);
 	}
 
 	String createTaskName(int index) {
@@ -77,22 +79,12 @@ public class LoggingSimulationListener implements SimulationListener {
 
 	@Override
 	public void sprintExecuted(SprintRetro sprintRetro) {
-		this.logger.logTitle("Sprint Retro");
-		this.logger.log("Remaining Hours: " + sprintRetro.getRemainingHours());
-		this.logger.log("Necessary Additional Hours: " + sprintRetro.getNecessaryAdditionalHours());
-		this.logger.logEmpty();
-
-		this.logger.logTitle("Tasks Overview");
-
-		final TaskWriter taskWriter = new TaskWriter(new LogTableWriter(this.logger));
-		taskWriter.setMemberNameSupplier(index -> this.memberNames.getValue(this.memberNames.getKeys()[index]));
-		taskWriter.setTaskNameSupplier(this.taskNames::getValue);
-		taskWriter.writeExecutionInfo(true).setWriteEstimationInfo(true);
-		taskWriter.writeTasks(sprintRetro.getSprint().getTasks());
+		this.loggingDelegator.sprintExecuted(sprintRetro);
 	}
 
 	@Override
 	public void simulationFinished(SimulationResult simulationResult) {
+		this.loggingDelegator.simulationFinished(simulationResult);
 	}
 
 	public Logger getLogger() {

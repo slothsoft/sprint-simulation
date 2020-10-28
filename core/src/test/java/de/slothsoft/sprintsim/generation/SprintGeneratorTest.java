@@ -1,7 +1,6 @@
 package de.slothsoft.sprintsim.generation;
 
 import java.util.Arrays;
-import java.util.Random;
 import java.util.function.Predicate;
 
 import org.junit.Assert;
@@ -20,8 +19,7 @@ public class SprintGeneratorTest {
 
 	@Before
 	public void setUp() {
-		this.generator = new SprintGenerator();
-		this.generator.rnd = new Random(1234567790l);
+		this.generator = new SprintGenerator().seed(1234567790l);
 	}
 
 	@Test
