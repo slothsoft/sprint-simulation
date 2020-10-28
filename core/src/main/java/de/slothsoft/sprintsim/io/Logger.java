@@ -4,12 +4,12 @@ public interface Logger {
 
 	default void logTitle(String string) {
 		log(string);
-		log(string.replaceAll(".", "="));
+		log(string.replaceAll(".", "=")); //$NON-NLS-1$ //$NON-NLS-2$
 		logEmpty();
 	}
 
 	default void logEmpty() {
-		log("");
+		log(""); //$NON-NLS-1$
 	}
 
 	void log(String string);

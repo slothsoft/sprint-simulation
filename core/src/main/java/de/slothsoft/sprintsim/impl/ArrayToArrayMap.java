@@ -1,6 +1,5 @@
 package de.slothsoft.sprintsim.impl;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -46,7 +45,7 @@ public class ArrayToArrayMap<K, V> implements Iterable<Entry<K, V>> {
 
 		@Override
 		public V setValue(V value) {
-			throw new UnsupportedOperationException("Cannot set value!");
+			throw new UnsupportedOperationException("Cannot set value!"); //$NON-NLS-1$
 		}
 
 		@Override
@@ -56,7 +55,7 @@ public class ArrayToArrayMap<K, V> implements Iterable<Entry<K, V>> {
 
 	}
 
-	private String elementName = "element";
+	private String elementName = "element"; //$NON-NLS-1$
 	final List<K> keys;
 	final K[] keysAsArray;
 	V[] values;
@@ -79,7 +78,7 @@ public class ArrayToArrayMap<K, V> implements Iterable<Entry<K, V>> {
 	public V getValue(K key) {
 		final int index = this.keys.indexOf(key);
 		if (index < 0)
-			throw new IllegalArgumentException("A " + this.elementName + " with key " + key + " could not be found!");
+			throw new IllegalArgumentException("A " + this.elementName + " with key " + key + " could not be found!"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		return this.values == null ? null : this.values[index];
 	}
 
@@ -97,7 +96,7 @@ public class ArrayToArrayMap<K, V> implements Iterable<Entry<K, V>> {
 	public void setValues(V... values) {
 		if (values != null && values.length != this.keys.size())
 			throw new IllegalArgumentException(
-					"Only " + this.keys.size() + " " + this.elementName + "s are allowed, but was: " + values.length);
+					"Only " + this.keys.size() + " " + this.elementName + "s are allowed, but was: " + values.length); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		this.values = values;
 	}
 

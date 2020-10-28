@@ -16,11 +16,11 @@ import de.slothsoft.sprintsim.config.TaskConfig;
 public class SprintExecutor {
 
 	/** The member that executed a task - a <code>Member</code>. */
-	public static final String TASK_DATA_ASSIGNEE = "assignee";
+	public static final String TASK_DATA_ASSIGNEE = "assignee"; //$NON-NLS-1$
 	/** The member that executed a task - an <code>int</code>. */
-	public static final String TASK_DATA_ASSIGNEE_INDEX = "assigneeIndex";
+	public static final String TASK_DATA_ASSIGNEE_INDEX = "assigneeIndex"; //$NON-NLS-1$
 	/** The time needed to executed a task - a <code>double</code>. */
-	public static final String TASK_DATA_NECESSARY_HOURS = "necessaryHours";
+	public static final String TASK_DATA_NECESSARY_HOURS = "necessaryHours"; //$NON-NLS-1$
 
 	private Member[] members;
 	private TaskConfig taskConfig = new TaskConfig();

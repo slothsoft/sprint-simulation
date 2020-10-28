@@ -12,10 +12,12 @@ import de.slothsoft.sprintsim.generation.SprintGenerator;
 
 public class TaskWriter {
 
+	public static final Function<Task, String> DEFAULT_TASK_NAME_SUPPLIER = task -> "TASK-" + String.valueOf(task.hashCode()); //$NON-NLS-1$
+
 	private final TableWriter tableWriter;
 
 	private IntFunction<String> memberNameSupplier = i -> String.valueOf(i);
-	private Function<Task, String> taskNameSupplier = task -> "TASK-" + String.valueOf(task.hashCode());
+	private Function<Task, String> taskNameSupplier = DEFAULT_TASK_NAME_SUPPLIER;
 
 	private boolean writeEstimationInfo;
 	private boolean writeExecutionInfo;
@@ -39,15 +41,15 @@ public class TaskWriter {
 			for (int i = 0; i < memberEstimations.length; i++) {
 				headers.add(this.memberNameSupplier.apply(i));
 			}
-			headers.add("All");
+			headers.add(Messages.getString("All")); //$NON-NLS-1$
 		}
 
 		if (this.writeExecutionInfo) {
 			if (this.writeEstimationInfo) {
 				headers.add(null);
 			}
-			headers.add("Assignee");
-			headers.add("Necessary Time");
+			headers.add(Messages.getString("Assignee")); //$NON-NLS-1$
+			headers.add(Messages.getString("NecessaryTime")); //$NON-NLS-1$
 		}
 
 		this.tableWriter.writeHeader(headers.toArray(new String[headers.size()]));

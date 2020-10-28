@@ -17,7 +17,7 @@ public class TaskConfig {
 			case LOW :
 				return this.lowComplexityHours;
 			default :
-				throw new IllegalArgumentException("Do not know " + complexity + "!");
+				throw new IllegalArgumentException("Do not know " + complexity + "!"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 

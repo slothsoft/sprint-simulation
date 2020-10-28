@@ -27,7 +27,7 @@ class LoggingSprintsSimulationListener implements SimulationListener {
 	private static final int SPRINT_OVERVIEW_COLUMN_SIZE = 30;
 	private ArrayToArrayMap<Member, String> memberNames;
 	private Logger logger = System.out::println;
-	private Function<Task, String> taskNameSupplier = task -> "TASK-" + String.valueOf(task.hashCode());
+	private Function<Task, String> taskNameSupplier = TaskWriter.DEFAULT_TASK_NAME_SUPPLIER; //$NON-NLS-1$
 
 	private SprintPlanning lastSprintPlanning;
 
@@ -37,17 +37,17 @@ class LoggingSprintsSimulationListener implements SimulationListener {
 
 	@Override
 	public void simulationStarted(SimulationInfo simulationInfo) {
-		this.logger.logTitle("Team Members");
+		this.logger.logTitle(Messages.getString("TeamMembersTitle")); //$NON-NLS-1$
 		for (final Entry<Member, String> member : this.memberNames) {
-			this.logger.log(MessageFormat.format("{0} ({1}, {2}h)", member.getValue(),
+			this.logger.log(MessageFormat.format(Messages.getString("TeamMemberPattern"), member.getValue(), //$NON-NLS-1$
 					member.getKey().getWorkPerformance(), String.valueOf(member.getKey().getWorkHoursPerDay())));
 		}
 		this.logger.logEmpty();
 
-		this.logger.logTitle("Sprint Overview");
+		this.logger.logTitle(Messages.getString("SprintOverviewTitle")); //$NON-NLS-1$
 		LogTableWriter tableWriter = new LogTableWriter(this.logger).columnSize(SPRINT_OVERVIEW_COLUMN_SIZE);
-		tableWriter.writeHeader("Estimated Hours", "Estimated Additional Hours", "Remaining Hours",
-				"Additional Necessary Hours");
+		tableWriter.writeHeader(Messages.getString("EstimatedHours"), Messages.getString("EstimatedAdditionalHours"), Messages.getString("RemainingHours"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				Messages.getString("AdditionalNecessaryHours")); //$NON-NLS-1$
 	}
 
 	@Override
@@ -67,7 +67,7 @@ class LoggingSprintsSimulationListener implements SimulationListener {
 	public void simulationFinished(SimulationResult simulationResult) {
 		logger.logEmpty();
 
-		this.logger.logTitle("Tasks Overview");
+		this.logger.logTitle(Messages.getString("TaskOverviewTitle")); //$NON-NLS-1$
 
 		final TaskWriter taskWriter = new TaskWriter(new LogTableWriter(this.logger));
 		taskWriter.setMemberNameSupplier(index -> this.memberNames.getValue(this.memberNames.getKeys()[index]));

@@ -16,9 +16,9 @@ import de.slothsoft.sprintsim.config.TaskCreator;
 public class SprintGenerator {
 
 	/** An array of the member's estimations - a <code>double[]</code>. */
-	public static final String TASK_DATA_MEMBER_ESTIMATIONS = "memberEstimations";
+	public static final String TASK_DATA_MEMBER_ESTIMATIONS = "memberEstimations"; //$NON-NLS-1$
 	/** The final estimation of a task - a <code>double</code>. */
-	public static final String TASK_DATA_COLLECTED_ESTIMATION = "collectedEstimation";
+	public static final String TASK_DATA_COLLECTED_ESTIMATION = "collectedEstimation"; //$NON-NLS-1$
 
 	private Member[] members;
 	private Long seed;

@@ -12,12 +12,12 @@ import de.slothsoft.sprintsim.io.Logger;
 
 public class LoggingSimulationListener implements SimulationListener {
 
-	private static final String[] MEMBER_NAMES = {"Angie", "Bert", "Charles", "David", "Emil", "Francis", "Gert",
-			"Hans", "Ike", "James", "Klaus", "Lars", "Markus", "Norbert", "Olaf", "Paul", "Quentin", "Ralf", "Steffi",
-			"Tony", "Ulf", "Viktor", "Wolfgang", "Xerox", "Yens", "Zack"};
+	private static final String[] MEMBER_NAMES = {"Angie", "Bert", "Charles", "David", "Emil", "Francis", "Gert", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+			"Hans", "Ike", "James", "Klaus", "Lars", "Markus", "Norbert", "Olaf", "Paul", "Quentin", "Ralf", "Steffi", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$
+			"Tony", "Ulf", "Viktor", "Wolfgang", "Xerox", "Yens", "Zack"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 	private static final int FIRST_TASK = 31415;
 
-	private String taskIdPrefix = "LIO";
+	private String taskIdPrefix = "LIO"; //$NON-NLS-1$
 	private Logger logger = System.out::println;
 
 	private ArrayToArrayMap<Member, String> memberNames;
@@ -51,7 +51,7 @@ public class LoggingSimulationListener implements SimulationListener {
 		final int memberNameIndex = index % MEMBER_NAMES.length;
 		final int numberWithSameName = index / MEMBER_NAMES.length;
 		return MEMBER_NAMES[memberNameIndex]
-				+ (numberWithSameName > 0 ? ' ' + String.valueOf(numberWithSameName + 1) : "");
+				+ (numberWithSameName > 0 ? ' ' + String.valueOf(numberWithSameName + 1) : ""); //$NON-NLS-1$
 	}
 
 	@Override

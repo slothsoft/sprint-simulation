@@ -8,8 +8,8 @@ Charles (JUNIOR, 8h)
 Sprint Planning
 ===============
 
-Estimated Hours:  249.52595506379896
-Additional Hours: 9.52595506379896
+Estimated Hours: 249.52595506379896
+Estimated Additional Hours: 9.52595506379896
 
 Sprint Retro
 ============

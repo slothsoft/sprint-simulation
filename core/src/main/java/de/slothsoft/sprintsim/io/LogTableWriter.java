@@ -29,7 +29,7 @@ public class LogTableWriter implements TableWriter {
 		final String headersString = Arrays.stream(headers).map(this::createTableCenterAligned)
 				.collect(Collectors.joining());
 		this.logger.log(headersString);
-		this.logger.log(headersString.replaceAll(".", "="));
+		this.logger.log(headersString.replaceAll(".", "=")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	String createTableCenterAligned(String value) {
@@ -75,7 +75,7 @@ public class LogTableWriter implements TableWriter {
 	}
 
 	private static String createEmptyColumn(int targetSize) {
-		return IntStream.range(0, targetSize).mapToObj(i -> " ").collect(Collectors.joining());
+		return IntStream.range(0, targetSize).mapToObj(i -> " ").collect(Collectors.joining()); //$NON-NLS-1$
 	}
 
 	public Logger getLogger() {

@@ -24,7 +24,7 @@ class LoggingOneSprintSimulationListener implements SimulationListener {
 
 	private ArrayToArrayMap<Member, String> memberNames;
 	private Logger logger = System.out::println;
-	private Function<Task, String> taskNameSupplier = task -> "TASK-" + String.valueOf(task.hashCode());
+	private Function<Task, String> taskNameSupplier = TaskWriter.DEFAULT_TASK_NAME_SUPPLIER; //$NON-NLS-1$
 
 	public LoggingOneSprintSimulationListener(ArrayToArrayMap<Member, String> memberNames) {
 		this.memberNames = Objects.requireNonNull(memberNames);
@@ -33,9 +33,9 @@ class LoggingOneSprintSimulationListener implements SimulationListener {
 	@Override
 	public void simulationStarted(SimulationInfo simulationInfo) {
 
-		this.logger.logTitle("Team Members");
+		this.logger.logTitle(Messages.getString("TeamMembersTitle")); //$NON-NLS-1$
 		for (final Entry<Member, String> member : this.memberNames) {
-			this.logger.log(MessageFormat.format("{0} ({1}, {2}h)", member.getValue(),
+			this.logger.log(MessageFormat.format(Messages.getString("TeamMemberPattern"), member.getValue(), //$NON-NLS-1$
 					member.getKey().getWorkPerformance(), String.valueOf(member.getKey().getWorkHoursPerDay())));
 		}
 		this.logger.logEmpty();
@@ -43,20 +43,20 @@ class LoggingOneSprintSimulationListener implements SimulationListener {
 
 	@Override
 	public void sprintPlanned(SprintPlanning sprintPlanning) {
-		this.logger.logTitle("Sprint Planning");
-		this.logger.log("Estimated Hours:  " + sprintPlanning.getEstimatedHours());
-		this.logger.log("Additional Hours: " + sprintPlanning.getEstimatedAdditionalHours());
+		this.logger.logTitle(Messages.getString("SprintPlanningTitle")); //$NON-NLS-1$
+		this.logger.log(Messages.getString("EstimatedHours") + ": "  + sprintPlanning.getEstimatedHours()); //$NON-NLS-1$ //$NON-NLS-2$
+		this.logger.log(Messages.getString("EstimatedAdditionalHours") + ": " + sprintPlanning.getEstimatedAdditionalHours()); //$NON-NLS-1$ //$NON-NLS-2$
 		this.logger.logEmpty();
 	}
 
 	@Override
 	public void sprintExecuted(SprintRetro sprintRetro) {
-		this.logger.logTitle("Sprint Retro");
-		this.logger.log("Remaining Hours: " + sprintRetro.getRemainingHours());
-		this.logger.log("Necessary Additional Hours: " + sprintRetro.getNecessaryAdditionalHours());
+		this.logger.logTitle(Messages.getString("SprintRetroTitle")); //$NON-NLS-1$
+		this.logger.log(Messages.getString("RemainingHours") + ": " + sprintRetro.getRemainingHours()); //$NON-NLS-1$ //$NON-NLS-2$
+		this.logger.log(Messages.getString("NecessaryAdditionalHours") + ": " + sprintRetro.getNecessaryAdditionalHours()); //$NON-NLS-1$ //$NON-NLS-2$
 		this.logger.logEmpty();
 
-		this.logger.logTitle("Tasks Overview");
+		this.logger.logTitle(Messages.getString("TaskOverviewTitle")); //$NON-NLS-1$
 
 		final TaskWriter taskWriter = new TaskWriter(new LogTableWriter(this.logger));
 		taskWriter.setMemberNameSupplier(index -> this.memberNames.getValue(this.memberNames.getKeys()[index]));
