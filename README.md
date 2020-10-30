@@ -4,8 +4,9 @@
 
 - **Author:** [Stef Schulz](mailto:s.schulz@slothsoft.de)
 - **Repository:** <https://github.com/slothsoft/sprint-simulation>
-- **Developer Resources:** [Executed Tests](http://slothsoft.github.io/sprint-simulation/tests), [Code Coverage](http://slothsoft.github.io/sprint-simulation/coverage)
+- **Developer Resources:** [Executed Tests](http://slothsoft.github.io/sprint-simulation/tests/), [Code Coverage](http://slothsoft.github.io/sprint-simulation/coverage)
 
+This project was born to simulate sprint planning and execution, and figure out if you can estimate tasks as a group.
 
 
 **Content:**
