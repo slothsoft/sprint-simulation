@@ -1,13 +1,11 @@
 package de.slothsoft.sprintsim.simulation;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 import de.slothsoft.sprintsim.Member;
 import de.slothsoft.sprintsim.Task;
 import de.slothsoft.sprintsim.execution.SprintRetro;
 import de.slothsoft.sprintsim.generation.SprintPlanning;
-import de.slothsoft.sprintsim.impl.ArrayToArrayMap;
 import de.slothsoft.sprintsim.io.Logger;
 
 public class LoggingSimulationListener implements SimulationListener {
@@ -16,35 +14,35 @@ public class LoggingSimulationListener implements SimulationListener {
 			"Hans", "Ike", "James", "Klaus", "Lars", "Markus", "Norbert", "Olaf", "Paul", "Quentin", "Ralf", "Steffi", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$
 			"Tony", "Ulf", "Viktor", "Wolfgang", "Xerox", "Yens", "Zack"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 	private static final int FIRST_TASK = 31415;
+	/** A <code>String</code> for easier story telling. */
+	public static final String TASK_DATA_NAME = "name"; //$NON-NLS-1$
+	/** A <code>String</code> for easier story telling. */
+	public static final String MEMBER_DATA_NAME = "name"; //$NON-NLS-1$
 
 	private String taskIdPrefix = "LIO"; //$NON-NLS-1$
 	private Logger logger = System.out::println;
 
-	private ArrayToArrayMap<Member, String> memberNames;
-	private ArrayToArrayMap<Task, String> taskNames;
-	
+	private int taskCount;
 	private SimulationListener loggingDelegator;
 
 	@Override
 	public void simulationStarted(SimulationInfo simulationInfo) {
-		this.taskNames = new ArrayToArrayMap<Task, String>();
-		this.memberNames = createMemberNames(simulationInfo.getMembers());
+		appendMemberNames(simulationInfo.getMembers());
+		this.taskCount = 0;
 
 		if (simulationInfo.getNumberOfSprints() == 1) {
-			this.loggingDelegator = new LoggingOneSprintSimulationListener(this.memberNames).logger(this.logger).taskNameSupplier(task -> this.taskNames.getValue(task));
+			this.loggingDelegator = new LoggingOneSprintSimulationListener().logger(this.logger).taskNameSupplier(task -> (String) task.getUserData(TASK_DATA_NAME));
 		} else {
-			this.loggingDelegator = new LoggingSprintsSimulationListener(this.memberNames).logger(this.logger).taskNameSupplier(task -> this.taskNames.getValue(task));
+			this.loggingDelegator = new LoggingSprintsSimulationListener().logger(this.logger).taskNameSupplier(task -> (String) task.getUserData(TASK_DATA_NAME));
 		}
 		
 		this.loggingDelegator.simulationStarted(simulationInfo);
 	}
 
-	private static ArrayToArrayMap<Member, String> createMemberNames(Member[] members) {
-		final String[] memberNamesArray = new String[members.length];
+	private static void appendMemberNames(Member[] members) {
 		for (int i = 0; i < members.length; i++) {
-			memberNamesArray[i] = createMemberName(i);
+			members[i] .addUserData(MEMBER_DATA_NAME, createMemberName(i));
 		}
-		return new ArrayToArrayMap<Member, String>(members).values(memberNamesArray);
 	}
 
 	static String createMemberName(int index) {
@@ -61,16 +59,10 @@ public class LoggingSimulationListener implements SimulationListener {
 	}
 
 	private void appendTaskNames(Task[] tasks) {
-		int startIndex = this.taskNames.getKeys().length;
-		final Task[] tasksArray = Arrays.copyOf(taskNames.getKeys(), startIndex + tasks.length);
-		final String[] taskNamesArray = taskNames.getValues() == null ? new String[tasks.length] : Arrays.copyOf(taskNames.getValues(), tasksArray.length);
-		
 		for (int i = 0; i < tasks.length; i++) {
-			tasksArray[startIndex + i] = tasks[i];
-			taskNamesArray[startIndex + i] = createTaskName(startIndex + i);
+			tasks[i].addUserData(TASK_DATA_NAME, createTaskName(this.taskCount + i));
 		}
-
-		this.taskNames = new ArrayToArrayMap<Task, String>(tasksArray).values(taskNamesArray);
+		this.taskCount += tasks.length;
 	}
 
 	String createTaskName(int index) {

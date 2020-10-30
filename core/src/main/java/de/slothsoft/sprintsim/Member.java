@@ -1,5 +1,7 @@
 package de.slothsoft.sprintsim;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class Member {
@@ -19,6 +21,8 @@ public class Member {
 	Performance workPerformance = StandardPerformance.NORMAL;
 	double estimationDeviation = 0.0;
 	int workHoursPerDay = 8;
+
+	Map<String, Object> userData = new HashMap<>();
 
 	public double getEstimationDeviation() {
 		return this.estimationDeviation;
@@ -57,6 +61,18 @@ public class Member {
 
 	public void setWorkPerformance(Performance workPerformance) {
 		this.workPerformance = Objects.requireNonNull(workPerformance);
+	}
+
+	public void addUserData(String key, Object value) {
+		this.userData.put(key, value);
+	}
+
+	public void removeUserData(String key) {
+		this.userData.remove(key);
+	}
+
+	public Object getUserData(String key) {
+		return this.userData.get(key);
 	}
 
 }

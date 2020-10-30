@@ -1,7 +1,6 @@
 package de.slothsoft.sprintsim.simulation;
 
 import java.text.MessageFormat;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -9,7 +8,6 @@ import de.slothsoft.sprintsim.Member;
 import de.slothsoft.sprintsim.Task;
 import de.slothsoft.sprintsim.execution.SprintRetro;
 import de.slothsoft.sprintsim.generation.SprintPlanning;
-import de.slothsoft.sprintsim.impl.ArrayToArrayMap;
 import de.slothsoft.sprintsim.io.LogTableWriter;
 import de.slothsoft.sprintsim.io.Logger;
 import de.slothsoft.sprintsim.io.TaskWriter;
@@ -22,21 +20,19 @@ import de.slothsoft.sprintsim.io.TaskWriter;
 
 class LoggingOneSprintSimulationListener implements SimulationListener {
 
-	private ArrayToArrayMap<Member, String> memberNames;
+	private Member[] members;
 	private Logger logger = System.out::println;
 	private Function<Task, String> taskNameSupplier = TaskWriter.DEFAULT_TASK_NAME_SUPPLIER; //$NON-NLS-1$
-
-	public LoggingOneSprintSimulationListener(ArrayToArrayMap<Member, String> memberNames) {
-		this.memberNames = Objects.requireNonNull(memberNames);
-	}
 
 	@Override
 	public void simulationStarted(SimulationInfo simulationInfo) {
 
 		this.logger.logTitle(Messages.getString("TeamMembersTitle")); //$NON-NLS-1$
-		for (final Entry<Member, String> member : this.memberNames) {
-			this.logger.log(MessageFormat.format(Messages.getString("TeamMemberPattern"), member.getValue(), //$NON-NLS-1$
-					member.getKey().getWorkPerformance(), String.valueOf(member.getKey().getWorkHoursPerDay())));
+		
+		this.members = simulationInfo.getMembers();
+		for (final Member member : this.members) {
+			this.logger.log(MessageFormat.format(Messages.getString("TeamMemberPattern"), member.getUserData(LoggingSimulationListener.MEMBER_DATA_NAME), //$NON-NLS-1$
+					member.getWorkPerformance(), String.valueOf(member.getWorkHoursPerDay())));
 		}
 		this.logger.logEmpty();
 	}
@@ -59,7 +55,7 @@ class LoggingOneSprintSimulationListener implements SimulationListener {
 		this.logger.logTitle(Messages.getString("TaskOverviewTitle")); //$NON-NLS-1$
 
 		final TaskWriter taskWriter = new TaskWriter(new LogTableWriter(this.logger));
-		taskWriter.setMemberNameSupplier(index -> this.memberNames.getValue(this.memberNames.getKeys()[index]));
+		taskWriter.setMemberNameSupplier(index -> (String) this.members[index].getUserData(LoggingSimulationListener.MEMBER_DATA_NAME));
 		taskWriter.setTaskNameSupplier(this.taskNameSupplier);
 		taskWriter.writeExecutionInfo(true).setWriteEstimationInfo(true);
 		taskWriter.writeTasks(sprintRetro.getSprint().getTasks());
