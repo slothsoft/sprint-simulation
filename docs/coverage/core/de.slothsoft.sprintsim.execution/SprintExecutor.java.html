@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SprintExecutor.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Charts Coverage</a> &gt; <a href="../index.html" class="el_bundle">core</a> &gt; <a href="index.source.html" class="el_package">de.slothsoft.sprintsim.execution</a> &gt; <span class="el_source">SprintExecutor.java</span></div><h1>SprintExecutor.java</h1><pre class="source lang-java linenums">package de.slothsoft.sprintsim.execution;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+
+import de.slothsoft.sprintsim.Member;
+import de.slothsoft.sprintsim.Sprint;
+import de.slothsoft.sprintsim.Task;
+import de.slothsoft.sprintsim.config.TaskConfig;
+
+public class SprintExecutor {
+
+	/** The member that executed a task - a &lt;code&gt;Member&lt;/code&gt;. */
+	public static final String TASK_DATA_ASSIGNEE = &quot;assignee&quot;; //$NON-NLS-1$
+	/** The member that executed a task - an &lt;code&gt;int&lt;/code&gt;. */
+	public static final String TASK_DATA_ASSIGNEE_INDEX = &quot;assigneeIndex&quot;; //$NON-NLS-1$
+	/** The time needed to executed a task - a &lt;code&gt;double&lt;/code&gt;. */
+	public static final String TASK_DATA_NECESSARY_HOURS = &quot;necessaryHours&quot;; //$NON-NLS-1$
+
+	private Member[] members;
+<span class="fc" id="L26">	private TaskConfig taskConfig = new TaskConfig();</span>
+
+<span class="fc" id="L28">	public SprintExecutor(Member... members) {</span>
+<span class="fc" id="L29">		this.members = Objects.requireNonNull(members);</span>
+<span class="fc" id="L30">	}</span>
+
+	public SprintRetro execute(Sprint sprint) {
+<span class="fc" id="L33">		final List&lt;Task&gt; tasksToDo = new ArrayList&lt;&gt;(Arrays.asList(sprint.getTasks()));</span>
+		// we do long tasks first
+		// TODO: make this configurable?
+<span class="fc" id="L36">		tasksToDo.sort(Comparator.comparing(Task::getComplexity).reversed());</span>
+
+<span class="fc bfc" id="L38" title="All 2 branches covered.">		if (this.members.length == 0) return new SprintRetro(sprint, this.members, Double.NaN, Double.NaN);</span>
+
+<span class="fc" id="L40">		final double[] workHours = generateWorkHours(sprint.getLengthInDays());</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">		for (final Task task : tasksToDo) {</span>
+<span class="fc" id="L42">			final int indexOfIdleMember = IntStream.range(0, this.members.length).boxed()</span>
+<span class="fc" id="L43">					.max(Comparator.comparingDouble(index -&gt; workHours[index.intValue()])).get().intValue();</span>
+<span class="fc" id="L44">			final Member idleMember = this.members[indexOfIdleMember];</span>
+
+<span class="fc" id="L46">			final double taskBaseHours = this.taskConfig.getHours(task.getComplexity());</span>
+<span class="fc" id="L47">			final double taskHours = taskBaseHours * idleMember.getWorkPerformance().getMultiplicator(task);</span>
+
+<span class="fc" id="L49">			task.addUserData(TASK_DATA_ASSIGNEE, idleMember);</span>
+<span class="fc" id="L50">			task.addUserData(TASK_DATA_ASSIGNEE_INDEX, Integer.valueOf(indexOfIdleMember));</span>
+<span class="fc" id="L51">			task.addUserData(TASK_DATA_NECESSARY_HOURS, Double.valueOf(taskHours));</span>
+
+			// remove the hours
+<span class="fc" id="L54">			workHours[indexOfIdleMember] -= taskHours;</span>
+<span class="fc" id="L55">		}</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">		final double necessaryAdditionalHours = -DoubleStream.of(workHours).filter(d -&gt; d &lt; 0).sum();</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">		final double remainingHours = DoubleStream.of(workHours).filter(d -&gt; d &gt; 0).sum();</span>
+<span class="fc" id="L58">		return new SprintRetro(sprint, this.members, necessaryAdditionalHours, remainingHours);</span>
+	}
+
+	double[] generateWorkHours(int lengthInDays) {
+<span class="fc" id="L62">		final double[] result = new double[this.members.length];</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">		for (int i = 0; i &lt; result.length; i++) {</span>
+<span class="fc" id="L64">			result[i] = lengthInDays * this.members[i].getWorkHoursPerDay();</span>
+		}
+<span class="fc" id="L66">		return result;</span>
+	}
+
+	public Member[] getMembers() {
+<span class="fc" id="L70">		return this.members;</span>
+	}
+
+	public SprintExecutor members(Member... newMembers) {
+<span class="fc" id="L74">		setMembers(newMembers);</span>
+<span class="fc" id="L75">		return this;</span>
+	}
+
+	public void setMembers(Member... members) {
+<span class="fc" id="L79">		this.members = Objects.requireNonNull(members);</span>
+<span class="fc" id="L80">	}</span>
+
+	public TaskConfig getTaskConfig() {
+<span class="fc" id="L83">		return this.taskConfig;</span>
+	}
+
+	public SprintExecutor taskConfig(TaskConfig newTaskConfig) {
+<span class="fc" id="L87">		setTaskConfig(newTaskConfig);</span>
+<span class="fc" id="L88">		return this;</span>
+	}
+
+	public void setTaskConfig(TaskConfig taskConfig) {
+<span class="fc" id="L92">		this.taskConfig = Objects.requireNonNull(taskConfig);</span>
+<span class="fc" id="L93">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

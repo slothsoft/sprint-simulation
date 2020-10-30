@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>LoggingSprintsSimulationListener.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Charts Coverage</a> &gt; <a href="../index.html" class="el_bundle">core</a> &gt; <a href="index.source.html" class="el_package">de.slothsoft.sprintsim.simulation</a> &gt; <span class="el_source">LoggingSprintsSimulationListener.java</span></div><h1>LoggingSprintsSimulationListener.java</h1><pre class="source lang-java linenums">package de.slothsoft.sprintsim.simulation;
+
+import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.function.Function;
+
+import de.slothsoft.sprintsim.Member;
+import de.slothsoft.sprintsim.Task;
+import de.slothsoft.sprintsim.execution.SprintRetro;
+import de.slothsoft.sprintsim.generation.SprintPlanning;
+import de.slothsoft.sprintsim.io.LogTableWriter;
+import de.slothsoft.sprintsim.io.Logger;
+import de.slothsoft.sprintsim.io.TaskWriter;
+
+/**
+ * This {@link SimulationListener} logs the information from multiple sprints in
+ * a nice little table. If you have only one sprint consider using
+ * {@link LoggingOneSprintSimulationListener}.
+ */
+
+<span class="fc" id="L23">class LoggingSprintsSimulationListener implements SimulationListener {</span>
+
+	private static final int SPRINT_OVERVIEW_COLUMN_SIZE = 30;
+
+	private Member[] members;
+<span class="fc" id="L28">	private Logger logger = System.out::println;</span>
+<span class="fc" id="L29">	private Function&lt;Task, String&gt; taskNameSupplier = TaskWriter.DEFAULT_TASK_NAME_SUPPLIER; //$NON-NLS-1$</span>
+
+	private SprintPlanning lastSprintPlanning;
+
+	@Override
+	public void simulationStarted(SimulationInfo simulationInfo) {
+<span class="fc" id="L35">		this.logger.logTitle(Messages.getString(&quot;TeamMembersTitle&quot;)); //$NON-NLS-1$</span>
+		
+<span class="fc" id="L37">		this.members = simulationInfo.getMembers();</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">		for (final Member member : this.members) {</span>
+<span class="fc" id="L39">			this.logger.log(MessageFormat.format(Messages.getString(&quot;TeamMemberPattern&quot;), member.getUserData(LoggingSimulationListener.MEMBER_DATA_NAME), //$NON-NLS-1$</span>
+<span class="fc" id="L40">					member.getWorkPerformance(), String.valueOf(member.getWorkHoursPerDay())));</span>
+		}
+<span class="fc" id="L42">		this.logger.logEmpty();</span>
+
+<span class="fc" id="L44">		this.logger.logTitle(Messages.getString(&quot;SprintOverviewTitle&quot;)); //$NON-NLS-1$</span>
+<span class="fc" id="L45">		LogTableWriter tableWriter = new LogTableWriter(this.logger).columnSize(SPRINT_OVERVIEW_COLUMN_SIZE);</span>
+<span class="fc" id="L46">		tableWriter.writeHeader(Messages.getString(&quot;EstimatedHours&quot;), Messages.getString(&quot;EstimatedAdditionalHours&quot;), Messages.getString(&quot;RemainingHours&quot;), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
+<span class="fc" id="L47">				Messages.getString(&quot;AdditionalNecessaryHours&quot;)); //$NON-NLS-1$</span>
+<span class="fc" id="L48">	}</span>
+
+	@Override
+	public void sprintPlanned(SprintPlanning sprintPlanning) {
+<span class="fc" id="L52">		this.lastSprintPlanning = sprintPlanning;</span>
+<span class="fc" id="L53">	}</span>
+
+	@Override
+	public void sprintExecuted(SprintRetro sprintRetro) {
+<span class="fc" id="L57">		LogTableWriter tableWriter = new LogTableWriter(this.logger).columnSize(SPRINT_OVERVIEW_COLUMN_SIZE);</span>
+<span class="fc" id="L58">		tableWriter.writeLine(this.lastSprintPlanning.getEstimatedHours(),</span>
+<span class="fc" id="L59">				this.lastSprintPlanning.getEstimatedAdditionalHours(), sprintRetro.getRemainingHours(),</span>
+<span class="fc" id="L60">				sprintRetro.getNecessaryAdditionalHours());</span>
+<span class="fc" id="L61">	}</span>
+
+	@Override
+	public void simulationFinished(SimulationResult simulationResult) {
+<span class="fc" id="L65">		logger.logEmpty();</span>
+
+<span class="fc" id="L67">		this.logger.logTitle(Messages.getString(&quot;TaskOverviewTitle&quot;)); //$NON-NLS-1$</span>
+
+<span class="fc" id="L69">		final TaskWriter taskWriter = new TaskWriter(new LogTableWriter(this.logger));</span>
+<span class="fc" id="L70">		taskWriter.setMemberNameSupplier(index -&gt; (String) this.members[index].getUserData(LoggingSimulationListener.MEMBER_DATA_NAME));</span>
+<span class="fc" id="L71">		taskWriter.setTaskNameSupplier(this.taskNameSupplier);</span>
+<span class="fc" id="L72">		taskWriter.writeExecutionInfo(true).setWriteEstimationInfo(true);</span>
+<span class="fc" id="L73">		taskWriter.writeTasks(Arrays.stream(simulationResult.retros).flatMap(r -&gt; Arrays.stream(r.getSprint().getTasks()))</span>
+<span class="fc" id="L74">						.sorted(Comparator.comparing(taskNameSupplier)).toArray(Task[]::new));</span>
+<span class="fc" id="L75">	}</span>
+
+	public Logger getLogger() {
+<span class="nc" id="L78">		return this.logger;</span>
+	}
+
+	public LoggingSprintsSimulationListener logger(Logger newLogger) {
+<span class="fc" id="L82">		setLogger(newLogger);</span>
+<span class="fc" id="L83">		return this;</span>
+	}
+
+	public void setLogger(Logger logger) {
+<span class="fc" id="L87">		this.logger = Objects.requireNonNull(logger);</span>
+<span class="fc" id="L88">	}</span>
+
+	public Function&lt;Task, String&gt; getTaskNameSupplier() {
+<span class="nc" id="L91">		return taskNameSupplier;</span>
+	}
+
+	public LoggingSprintsSimulationListener taskNameSupplier(Function&lt;Task, String&gt; newTaskNameSupplier) {
+<span class="fc" id="L95">		setTaskNameSupplier(newTaskNameSupplier);</span>
+<span class="fc" id="L96">		return this;</span>
+	}
+
+	public void setTaskNameSupplier(Function&lt;Task, String&gt; taskNameSupplier) {
+<span class="fc" id="L100">		this.taskNameSupplier = Objects.requireNonNull(taskNameSupplier);</span>
+<span class="fc" id="L101">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

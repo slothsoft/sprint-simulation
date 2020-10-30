@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>LoggingSimulationListener.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Charts Coverage</a> &gt; <a href="../index.html" class="el_bundle">core</a> &gt; <a href="index.source.html" class="el_package">de.slothsoft.sprintsim.simulation</a> &gt; <span class="el_source">LoggingSimulationListener.java</span></div><h1>LoggingSimulationListener.java</h1><pre class="source lang-java linenums">package de.slothsoft.sprintsim.simulation;
+
+import java.util.Objects;
+
+import de.slothsoft.sprintsim.Member;
+import de.slothsoft.sprintsim.Task;
+import de.slothsoft.sprintsim.execution.SprintRetro;
+import de.slothsoft.sprintsim.generation.SprintPlanning;
+import de.slothsoft.sprintsim.io.Logger;
+
+<span class="fc" id="L11">public class LoggingSimulationListener implements SimulationListener {</span>
+
+<span class="fc" id="L13">	private static final String[] MEMBER_NAMES = {&quot;Angie&quot;, &quot;Bert&quot;, &quot;Charles&quot;, &quot;David&quot;, &quot;Emil&quot;, &quot;Francis&quot;, &quot;Gert&quot;, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$</span>
+			&quot;Hans&quot;, &quot;Ike&quot;, &quot;James&quot;, &quot;Klaus&quot;, &quot;Lars&quot;, &quot;Markus&quot;, &quot;Norbert&quot;, &quot;Olaf&quot;, &quot;Paul&quot;, &quot;Quentin&quot;, &quot;Ralf&quot;, &quot;Steffi&quot;, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$
+			&quot;Tony&quot;, &quot;Ulf&quot;, &quot;Viktor&quot;, &quot;Wolfgang&quot;, &quot;Xerox&quot;, &quot;Yens&quot;, &quot;Zack&quot;}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+	private static final int FIRST_TASK = 31415;
+	/** A &lt;code&gt;String&lt;/code&gt; for easier story telling. */
+	public static final String TASK_DATA_NAME = &quot;name&quot;; //$NON-NLS-1$
+	/** A &lt;code&gt;String&lt;/code&gt; for easier story telling. */
+	public static final String MEMBER_DATA_NAME = &quot;name&quot;; //$NON-NLS-1$
+
+<span class="fc" id="L22">	private String taskIdPrefix = &quot;LIO&quot;; //$NON-NLS-1$</span>
+<span class="fc" id="L23">	private Logger logger = System.out::println;</span>
+
+	private int taskCount;
+	private SimulationListener loggingDelegator;
+
+	@Override
+	public void simulationStarted(SimulationInfo simulationInfo) {
+<span class="fc" id="L30">		appendMemberNames(simulationInfo.getMembers());</span>
+<span class="fc" id="L31">		this.taskCount = 0;</span>
+
+<span class="fc bfc" id="L33" title="All 2 branches covered.">		if (simulationInfo.getNumberOfSprints() == 1) {</span>
+<span class="fc" id="L34">			this.loggingDelegator = new LoggingOneSprintSimulationListener().logger(this.logger).taskNameSupplier(task -&gt; (String) task.getUserData(TASK_DATA_NAME));</span>
+		} else {
+<span class="fc" id="L36">			this.loggingDelegator = new LoggingSprintsSimulationListener().logger(this.logger).taskNameSupplier(task -&gt; (String) task.getUserData(TASK_DATA_NAME));</span>
+		}
+		
+<span class="fc" id="L39">		this.loggingDelegator.simulationStarted(simulationInfo);</span>
+<span class="fc" id="L40">	}</span>
+
+	private static void appendMemberNames(Member[] members) {
+<span class="fc bfc" id="L43" title="All 2 branches covered.">		for (int i = 0; i &lt; members.length; i++) {</span>
+<span class="fc" id="L44">			members[i] .addUserData(MEMBER_DATA_NAME, createMemberName(i));</span>
+		}
+<span class="fc" id="L46">	}</span>
+
+	static String createMemberName(int index) {
+<span class="fc" id="L49">		final int memberNameIndex = index % MEMBER_NAMES.length;</span>
+<span class="fc" id="L50">		final int numberWithSameName = index / MEMBER_NAMES.length;</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">		return MEMBER_NAMES[memberNameIndex]</span>
+<span class="fc" id="L52">				+ (numberWithSameName &gt; 0 ? ' ' + String.valueOf(numberWithSameName + 1) : &quot;&quot;); //$NON-NLS-1$</span>
+	}
+
+	@Override
+	public void sprintPlanned(SprintPlanning sprintPlanning) {
+<span class="fc" id="L57">		appendTaskNames(sprintPlanning.getSprint().getTasks());</span>
+<span class="fc" id="L58">		this.loggingDelegator.sprintPlanned(sprintPlanning);</span>
+<span class="fc" id="L59">	}</span>
+
+	private void appendTaskNames(Task[] tasks) {
+<span class="fc bfc" id="L62" title="All 2 branches covered.">		for (int i = 0; i &lt; tasks.length; i++) {</span>
+<span class="fc" id="L63">			tasks[i].addUserData(TASK_DATA_NAME, createTaskName(this.taskCount + i));</span>
+		}
+<span class="fc" id="L65">		this.taskCount += tasks.length;</span>
+<span class="fc" id="L66">	}</span>
+
+	String createTaskName(int index) {
+<span class="fc" id="L69">		return this.taskIdPrefix + '-' + String.valueOf(FIRST_TASK + index);</span>
+	}
+
+	@Override
+	public void sprintExecuted(SprintRetro sprintRetro) {
+<span class="fc" id="L74">		this.loggingDelegator.sprintExecuted(sprintRetro);</span>
+<span class="fc" id="L75">	}</span>
+
+	@Override
+	public void simulationFinished(SimulationResult simulationResult) {
+<span class="fc" id="L79">		this.loggingDelegator.simulationFinished(simulationResult);</span>
+<span class="fc" id="L80">	}</span>
+
+	public Logger getLogger() {
+<span class="nc" id="L83">		return this.logger;</span>
+	}
+
+	public LoggingSimulationListener logger(Logger newLogger) {
+<span class="fc" id="L87">		setLogger(newLogger);</span>
+<span class="fc" id="L88">		return this;</span>
+	}
+
+	public void setLogger(Logger logger) {
+<span class="fc" id="L92">		this.logger = Objects.requireNonNull(logger);</span>
+<span class="fc" id="L93">	}</span>
+
+	public String getTaskIdPrefix() {
+<span class="nc" id="L96">		return this.taskIdPrefix;</span>
+	}
+
+	public LoggingSimulationListener taskIdPrefix(String newTaskIdPrefix) {
+<span class="nc" id="L100">		setTaskIdPrefix(newTaskIdPrefix);</span>
+<span class="nc" id="L101">		return this;</span>
+	}
+
+	public void setTaskIdPrefix(String taskIdPrefix) {
+<span class="fc" id="L105">		this.taskIdPrefix = Objects.requireNonNull(taskIdPrefix);</span>
+<span class="fc" id="L106">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

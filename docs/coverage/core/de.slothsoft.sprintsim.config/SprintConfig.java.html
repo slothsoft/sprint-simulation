@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SprintConfig.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Charts Coverage</a> &gt; <a href="../index.html" class="el_bundle">core</a> &gt; <a href="index.source.html" class="el_package">de.slothsoft.sprintsim.config</a> &gt; <span class="el_source">SprintConfig.java</span></div><h1>SprintConfig.java</h1><pre class="source lang-java linenums">package de.slothsoft.sprintsim.config;
+
+import java.util.Arrays;
+import java.util.Objects;
+
+import de.slothsoft.sprintsim.Complexity;
+import de.slothsoft.sprintsim.Task;
+
+public class SprintConfig {
+
+	public static SprintConfig createDefault() {
+<span class="fc" id="L12">		return new SprintConfig(Arrays.stream(Complexity.values())</span>
+<span class="fc" id="L13">				.map(c -&gt; new TaskCreator().constructor(() -&gt; new Task().complexity(c)))</span>
+<span class="fc" id="L14">				.toArray(TaskCreator[]::new));</span>
+	}
+
+<span class="fc" id="L17">	int lengthInDays = 10;</span>
+	TaskCreator[] taskCreators;
+
+<span class="fc" id="L20">	public SprintConfig(TaskCreator... taskCreators) {</span>
+<span class="fc" id="L21">		this.taskCreators = Objects.requireNonNull(taskCreators);</span>
+<span class="fc" id="L22">	}</span>
+
+	public TaskCreator[] getTaskCreators() {
+<span class="fc" id="L25">		return this.taskCreators;</span>
+	}
+
+	public SprintConfig taskCreators(TaskCreator... newTaskCreators) {
+<span class="nc" id="L29">		setTaskCreators(newTaskCreators);</span>
+<span class="nc" id="L30">		return this;</span>
+	}
+
+	public void setTaskCreators(TaskCreator... taskCreators) {
+<span class="nc" id="L34">		this.taskCreators = Objects.requireNonNull(taskCreators);</span>
+<span class="nc" id="L35">	}</span>
+
+	public int getLengthInDays() {
+<span class="fc" id="L38">		return this.lengthInDays;</span>
+	}
+
+	public SprintConfig lengthInDays(int newLengthInDays) {
+<span class="nc" id="L42">		setLengthInDays(newLengthInDays);</span>
+<span class="nc" id="L43">		return this;</span>
+	}
+
+	public void setLengthInDays(int lengthInDays) {
+<span class="nc" id="L47">		this.lengthInDays = lengthInDays;</span>
+<span class="nc" id="L48">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

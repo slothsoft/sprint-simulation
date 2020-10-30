@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Member.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Charts Coverage</a> &gt; <a href="../index.html" class="el_bundle">core</a> &gt; <a href="index.source.html" class="el_package">de.slothsoft.sprintsim</a> &gt; <span class="el_source">Member.java</span></div><h1>Member.java</h1><pre class="source lang-java linenums">package de.slothsoft.sprintsim;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+<span class="fc" id="L7">public class Member {</span>
+
+	public static final Member createJunior() {
+<span class="fc" id="L10">		return new Member().workPerformance(StandardPerformance.JUNIOR).estimationDeviation(0.5);</span>
+	}
+
+	public static final Member createNormal() {
+<span class="fc" id="L14">		return new Member().workPerformance(StandardPerformance.NORMAL).estimationDeviation(0.1);</span>
+	}
+
+	public static final Member createSenior() {
+<span class="fc" id="L18">		return new Member().workPerformance(StandardPerformance.SENIOR).estimationDeviation(0.0);</span>
+	}
+
+<span class="fc" id="L21">	Performance workPerformance = StandardPerformance.NORMAL;</span>
+<span class="fc" id="L22">	double estimationDeviation = 0.0;</span>
+<span class="fc" id="L23">	int workHoursPerDay = 8;</span>
+
+<span class="fc" id="L25">	Map&lt;String, Object&gt; userData = new HashMap&lt;&gt;();</span>
+
+	public double getEstimationDeviation() {
+<span class="fc" id="L28">		return this.estimationDeviation;</span>
+	}
+
+	public Member estimationDeviation(double newEstimationDeviation) {
+<span class="fc" id="L32">		setEstimationDeviation(newEstimationDeviation);</span>
+<span class="fc" id="L33">		return this;</span>
+	}
+
+	public void setEstimationDeviation(double estimationDeviation) {
+<span class="fc" id="L37">		this.estimationDeviation = estimationDeviation;</span>
+<span class="fc" id="L38">	}</span>
+
+	public int getWorkHoursPerDay() {
+<span class="fc" id="L41">		return this.workHoursPerDay;</span>
+	}
+
+	public Member workHoursPerDay(int newWorkHoursPerDay) {
+<span class="fc" id="L45">		setWorkHoursPerDay(newWorkHoursPerDay);</span>
+<span class="fc" id="L46">		return this;</span>
+	}
+
+	public void setWorkHoursPerDay(int workHoursPerDay) {
+<span class="fc" id="L50">		this.workHoursPerDay = workHoursPerDay;</span>
+<span class="fc" id="L51">	}</span>
+
+	public Performance getWorkPerformance() {
+<span class="fc" id="L54">		return this.workPerformance;</span>
+	}
+
+	public Member workPerformance(Performance newWorkPerformance) {
+<span class="fc" id="L58">		setWorkPerformance(newWorkPerformance);</span>
+<span class="fc" id="L59">		return this;</span>
+	}
+
+	public void setWorkPerformance(Performance workPerformance) {
+<span class="fc" id="L63">		this.workPerformance = Objects.requireNonNull(workPerformance);</span>
+<span class="fc" id="L64">	}</span>
+
+	public void addUserData(String key, Object value) {
+<span class="fc" id="L67">		this.userData.put(key, value);</span>
+<span class="fc" id="L68">	}</span>
+
+	public void removeUserData(String key) {
+<span class="fc" id="L71">		this.userData.remove(key);</span>
+<span class="fc" id="L72">	}</span>
+
+	public Object getUserData(String key) {
+<span class="fc" id="L75">		return this.userData.get(key);</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

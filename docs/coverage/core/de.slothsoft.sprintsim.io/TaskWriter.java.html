@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>TaskWriter.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Charts Coverage</a> &gt; <a href="../index.html" class="el_bundle">core</a> &gt; <a href="index.source.html" class="el_package">de.slothsoft.sprintsim.io</a> &gt; <span class="el_source">TaskWriter.java</span></div><h1>TaskWriter.java</h1><pre class="source lang-java linenums">package de.slothsoft.sprintsim.io;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.IntFunction;
+
+import de.slothsoft.sprintsim.Task;
+import de.slothsoft.sprintsim.execution.SprintExecutor;
+import de.slothsoft.sprintsim.generation.SprintGenerator;
+
+public class TaskWriter {
+
+<span class="pc" id="L15">	public static final Function&lt;Task, String&gt; DEFAULT_TASK_NAME_SUPPLIER = task -&gt; &quot;TASK-&quot; + String.valueOf(task.hashCode()); //$NON-NLS-1$</span>
+
+	private final TableWriter tableWriter;
+
+<span class="pc" id="L19">	private IntFunction&lt;String&gt; memberNameSupplier = i -&gt; String.valueOf(i);</span>
+<span class="fc" id="L20">	private Function&lt;Task, String&gt; taskNameSupplier = DEFAULT_TASK_NAME_SUPPLIER;</span>
+
+	private boolean writeEstimationInfo;
+	private boolean writeExecutionInfo;
+
+<span class="fc" id="L25">	public TaskWriter(TableWriter tableWriter) {</span>
+<span class="fc" id="L26">		this.tableWriter = Objects.requireNonNull(tableWriter);</span>
+<span class="fc" id="L27">	}</span>
+
+	public void writeTasks(Task... tasks) {
+<span class="fc" id="L30">		writeTasksHeaders(tasks[0]);</span>
+<span class="fc" id="L31">		writeTaskLines(tasks);</span>
+<span class="fc" id="L32">	}</span>
+
+	private void writeTasksHeaders(Task task) {
+<span class="fc" id="L35">		final List&lt;String&gt; headers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L36">		headers.add(null);</span>
+
+<span class="fc bfc" id="L38" title="All 2 branches covered.">		if (this.writeEstimationInfo) {</span>
+<span class="fc" id="L39">			final double[] memberEstimations = (double[]) task</span>
+<span class="fc" id="L40">					.getUserData(SprintGenerator.TASK_DATA_MEMBER_ESTIMATIONS);</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">			for (int i = 0; i &lt; memberEstimations.length; i++) {</span>
+<span class="fc" id="L42">				headers.add(this.memberNameSupplier.apply(i));</span>
+			}
+<span class="fc" id="L44">			headers.add(Messages.getString(&quot;All&quot;)); //$NON-NLS-1$</span>
+		}
+
+<span class="fc bfc" id="L47" title="All 2 branches covered.">		if (this.writeExecutionInfo) {</span>
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">			if (this.writeEstimationInfo) {</span>
+<span class="fc" id="L49">				headers.add(null);</span>
+			}
+<span class="fc" id="L51">			headers.add(Messages.getString(&quot;Assignee&quot;)); //$NON-NLS-1$</span>
+<span class="fc" id="L52">			headers.add(Messages.getString(&quot;NecessaryTime&quot;)); //$NON-NLS-1$</span>
+		}
+
+<span class="fc" id="L55">		this.tableWriter.writeHeader(headers.toArray(new String[headers.size()]));</span>
+<span class="fc" id="L56">	}</span>
+
+	private void writeTaskLines(Task[] tasks) {
+<span class="fc bfc" id="L59" title="All 2 branches covered.">		for (final Task task : tasks) {</span>
+<span class="fc" id="L60">			writeTaskLine(task);</span>
+		}
+<span class="fc" id="L62">	}</span>
+
+	private void writeTaskLine(Task task) {
+<span class="fc" id="L65">		final List&lt;Object&gt; cells = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L66">		cells.add(this.taskNameSupplier.apply(task));</span>
+
+<span class="fc bfc" id="L68" title="All 2 branches covered.">		if (this.writeEstimationInfo) {</span>
+<span class="fc" id="L69">			final double[] memberEstimations = (double[]) task</span>
+<span class="fc" id="L70">					.getUserData(SprintGenerator.TASK_DATA_MEMBER_ESTIMATIONS);</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">			for (int i = 0; i &lt; memberEstimations.length; i++) {</span>
+<span class="fc" id="L72">				cells.add(Double.valueOf(memberEstimations[i]));</span>
+			}
+<span class="fc" id="L74">			cells.add(task.getUserData(SprintGenerator.TASK_DATA_COLLECTED_ESTIMATION));</span>
+		}
+
+<span class="fc bfc" id="L77" title="All 2 branches covered.">		if (this.writeExecutionInfo) {</span>
+<span class="pc bpc" id="L78" title="1 of 2 branches missed.">			if (this.writeEstimationInfo) {</span>
+<span class="fc" id="L79">				cells.add(null);</span>
+			}
+<span class="fc" id="L81">			final int memberIndex = ((Integer) task.getUserData(SprintExecutor.TASK_DATA_ASSIGNEE_INDEX)).intValue();</span>
+<span class="fc" id="L82">			cells.add(this.memberNameSupplier.apply(memberIndex));</span>
+<span class="fc" id="L83">			cells.add(task.getUserData(SprintExecutor.TASK_DATA_NECESSARY_HOURS));</span>
+		}
+
+<span class="fc" id="L86">		this.tableWriter.writeLine(cells.toArray());</span>
+<span class="fc" id="L87">	}</span>
+
+	public IntFunction&lt;String&gt; getMemberNameSupplier() {
+<span class="nc" id="L90">		return this.memberNameSupplier;</span>
+	}
+
+	public TaskWriter memberNameSupplier(IntFunction&lt;String&gt; newMemberNameSupplier) {
+<span class="nc" id="L94">		setMemberNameSupplier(newMemberNameSupplier);</span>
+<span class="nc" id="L95">		return this;</span>
+	}
+
+	public void setMemberNameSupplier(IntFunction&lt;String&gt; memberNameSupplier) {
+<span class="fc" id="L99">		this.memberNameSupplier = Objects.requireNonNull(memberNameSupplier);</span>
+<span class="fc" id="L100">	}</span>
+
+	public Function&lt;Task, String&gt; getTaskNameSupplier() {
+<span class="nc" id="L103">		return this.taskNameSupplier;</span>
+	}
+
+	public TaskWriter taskNameSupplier(Function&lt;Task, String&gt; newTaskNameSupplier) {
+<span class="nc" id="L107">		setTaskNameSupplier(newTaskNameSupplier);</span>
+<span class="nc" id="L108">		return this;</span>
+	}
+
+	public void setTaskNameSupplier(Function&lt;Task, String&gt; taskNameSupplier) {
+<span class="fc" id="L112">		this.taskNameSupplier = Objects.requireNonNull(taskNameSupplier);</span>
+<span class="fc" id="L113">	}</span>
+
+	public boolean isWriteEstimationInfo() {
+<span class="nc" id="L116">		return this.writeEstimationInfo;</span>
+	}
+
+	public TaskWriter writeEstimationInfo(boolean newWriteEstimationInfo) {
+<span class="fc" id="L120">		setWriteEstimationInfo(newWriteEstimationInfo);</span>
+<span class="fc" id="L121">		return this;</span>
+	}
+
+	public void setWriteEstimationInfo(boolean writeEstimationInfo) {
+<span class="fc" id="L125">		this.writeEstimationInfo = writeEstimationInfo;</span>
+<span class="fc" id="L126">	}</span>
+
+	public boolean isWriteExecutionInfo() {
+<span class="nc" id="L129">		return this.writeExecutionInfo;</span>
+	}
+
+	public TaskWriter writeExecutionInfo(boolean newWriteExecutionInfo) {
+<span class="fc" id="L133">		setWriteExecutionInfo(newWriteExecutionInfo);</span>
+<span class="fc" id="L134">		return this;</span>
+	}
+
+	public void setWriteExecutionInfo(boolean writeExecutionInfo) {
+<span class="fc" id="L138">		this.writeExecutionInfo = writeExecutionInfo;</span>
+<span class="fc" id="L139">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

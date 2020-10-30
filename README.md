@@ -2,6 +2,12 @@
 
 [![Build Status](https://travis-ci.com/slothsoft/sprint-simulation.svg?branch=master)](https://travis-ci.com/slothsoft/sprint-simulation)
 
+- **Author:** [Stef Schulz](mailto:s.schulz@slothsoft.de)
+- **Repository:** <https://github.com/slothsoft/sprint-simulation>
+- **Developer Resources:** [Executed Tests](http://slothsoft.github.io/sprint-simulation/tests), [Code Coverage](http://slothsoft.github.io/sprint-simulation/coverage)
+
+
+
 **Content:**
 
 - [Preface](#preface)
