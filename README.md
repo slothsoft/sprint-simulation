@@ -18,7 +18,6 @@ This project was born to simulate sprint planning and execution, and figure out 
 - [Results](#results)
 - [Real Life](#real-life)
 - [Conclusion](#conclusion)
-- [To Do List](#to-do-list)
 - [Links](#links)
 
 
@@ -74,9 +73,9 @@ This project makes some assumptions:
 *(See [SprintGenerator](core/src/main/java/de/slothsoft/sprintsim/generation/SprintGenerator.java))*
 
 1. The team **`Member`s** get together
-2. A **`Task`s** is created from the never-ending task machine (see [TaskCreator])(core/src/main/java/de/slothsoft/sprintsim/config/TaskCreator.java)
+2. A **`Task`s** is created from the never-ending task machine (see [TaskCreator](core/src/main/java/de/slothsoft/sprintsim/config/TaskCreator.java))
 3. Each team member estimates how long it will take to do the task (for *them*) - for that they take the time it *will* take them to do the task, and use a Gaussian curve capped at their `estimationDeviation` to add a bit of variance; on average this means they will estimate correctly
-4. Am operation is used to get the team's estimation from the member's (average right now)
+4. An operation is used to get the team's estimation from the member's (average right now)
 5. If there is still hours left in the **`Sprint`**, start again at 2.
 
 
@@ -156,9 +155,9 @@ To analyze why let's have a look at the task overview (`SimpleSprintExample.java
 
 Let's take a look at our team members first:
 
-- **Angie** finishes tasks in 70% of the hours and is a perfect guesser
-- **Bert** finishes tasks in 100% of the hours and guesses with 10% deviation
-- **Charles** finishes tasks in 200% of the hours and guesses with 50% deviation
+- **Angie** needs 70% of the time to finish tasks and is a perfect guesser
+- **Bert** needs 100% of the time to finish tasks and guesses with 10% deviation
+- **Charles** needs 200% of the time to finish tasks and guesses with 50% deviation
 
 The interesting tasks are:
 
@@ -168,7 +167,7 @@ The interesting tasks are:
 - **LIO-31421** - Charles needs his time with the issue → 9 hours ➕
 - ...
 
-In summary: every time Charles does a task, he needs a lot more time than estimated, Bert's time is a bit better than the estimate and Angie needs a lot less time than estimated. But since Angie can do a lot more tasks than Charles her faster time sums up.
+In summary: every time Charles does a task, he needs a lot more time than estimated, Bert's time is a bit better than the estimate and Angie needs a lot less time than estimated. But since Angie can do a lot more tasks than Charles her faster times sum up.
 
 Mathematically speaking, both Angie and Bert are twice as fast as Charles. From their tasks, the additional hours of half of them are needed to allow Charles to work at his slower speed. So the additional hours of the other half is what makes up the "remaining hours".
 
@@ -205,7 +204,7 @@ This is surprising, because ever since I joined a team that estimates together, 
 
 **So why does that not work for us?**
 
-Because Charles is not the perfect guesser this simulation made him. In fact, after estimating two tasks with Angie and Bert he is very good in guessing the same numbers as them - even if he takes a lot more time. Since you do not compare estimations at the end of the sprint (and there is no way you could do that realistically), his behavior has no consequences. 
+Because Charles is not the perfect guesser this simulation made him. In fact, after estimating a couple of sprints with Angie and Bert he is very good in guessing the same numbers as them - even if he takes a lot more time. Since you do not compare estimations at the end of the sprint (and there is no way you could do that realistically), his behavior has no consequences. 
 
 Charles acts like this:
 
@@ -246,11 +245,13 @@ This is a conversation I actually had when I estimated my *needed* time:
 - **I:** "So... you want me to use your estimation?"
 - **Team:** "Yes."
 
-This might be because the team doesn't know much about scrum, but I've seen it time and time again: junior members (and others with little knowledge of a task at hand) will usually not estimate their needed time, but try to stay close to their peers. This is often enforced by the team, which mistakenly asks the same questions as for their story point estimation (where it is absolutely okay and even preferred to have everybody guess the same value).
+This might be because this particular team doesn't know much about scrum, but I've seen it time and time again: junior members (and others with little knowledge of a task at hand) will usually not estimate their needed time, but try to stay close to their peers. This is often enforced by the team, which mistakenly asks the same questions as for their story point estimation (where it is absolutely okay and even preferred to have everybody guess the same value).
 
-How do we fix this?
+**How do we fix this?**
 
-I have honestly no practical idea. It should be clear to forbid questions towards the time estimations, even if the estimation is a lot off. But this would work against the case were one or many team members did not understand the task correctly.
+I have honestly no practical idea besides pre-assigning tasks. 
+
+It should be clear to forbid questions towards the time estimations, even if the estimation is off by a lot. But this would work in the case were one or many team members did not understand the task correctly and questions should have been asked.
 
 Since the entire estimation only works if individual members estimate well, this should be trained. For this you would need to make team members find their original estimation and see how much off they were eventually. For this purpose they should ignore the team estimate. Which of course makes monitoring the tasks hard.
 
@@ -268,7 +269,7 @@ This is just a simulation, and humans don't act like computer programs. So in re
     
 - of course, most glaringly, you can't calculate hours from story points (but somehow we have to create different-length tasks)
 - most of them time, team members will not estimate correctly on average; from what I've seen, even skilled team members will (almost) always over-estimate or under-estimate, even if only by a little
-- the performance of a team member is not fix - their health, the day of the week, the hour of the day, distractions, etc. change their needed time
+- the performance of a team member is not fixed - their health, the day of the week, the hour of the day, distractions, etc. change their needed time
 - another thing that changes the "needed time" is the "estimated time" - if a team member is a lot faster than estimated, they might use the remaining time to do something else that is related; if they are a lot slower they might be able to rush things or "outsource" parts of the task into other tasks
 
 
@@ -277,13 +278,6 @@ This is just a simulation, and humans don't act like computer programs. So in re
 
 It is not possible to estimate as a team if the actual work performance varies a lot, the team members shame each other from voting a higher time and if nobody checks the individual estimation (instead of the team estimation) versus actual needed time.
 
-
-
-# To Do List
-
-- there are still some TODOs in the code that needs evaluation
-- there should be a bunch more listeners, so I can create a "story" mode
-- I want to create a vaadin app from this
 
 
 # Links
