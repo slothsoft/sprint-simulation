@@ -31,17 +31,19 @@ public class LoggingSimulationListener implements SimulationListener {
 		this.taskCount = 0;
 
 		if (simulationInfo.getNumberOfSprints() == 1) {
-			this.loggingDelegator = new LoggingOneSprintSimulationListener().logger(this.logger).taskNameSupplier(task -> (String) task.getUserData(TASK_DATA_NAME));
+			this.loggingDelegator = new LoggingOneSprintSimulationListener().logger(this.logger)
+					.taskNameSupplier(task -> (String) task.getUserData(TASK_DATA_NAME));
 		} else {
-			this.loggingDelegator = new LoggingSprintsSimulationListener().logger(this.logger).taskNameSupplier(task -> (String) task.getUserData(TASK_DATA_NAME));
+			this.loggingDelegator = new LoggingSprintsSimulationListener().logger(this.logger)
+					.taskNameSupplier(task -> (String) task.getUserData(TASK_DATA_NAME));
 		}
-		
+
 		this.loggingDelegator.simulationStarted(simulationInfo);
 	}
 
-	private static void appendMemberNames(Member[] members) {
+	static void appendMemberNames(Member[] members) {
 		for (int i = 0; i < members.length; i++) {
-			members[i] .addUserData(MEMBER_DATA_NAME, createMemberName(i));
+			members[i].addUserData(MEMBER_DATA_NAME, createMemberName(i));
 		}
 	}
 
@@ -57,6 +59,8 @@ public class LoggingSimulationListener implements SimulationListener {
 		appendTaskNames(sprintPlanning.getSprint().getTasks());
 		this.loggingDelegator.sprintPlanned(sprintPlanning);
 	}
+
+	// TODO: maybe make this and the member name generator configurable
 
 	private void appendTaskNames(Task[] tasks) {
 		for (int i = 0; i < tasks.length; i++) {

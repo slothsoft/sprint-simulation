@@ -1,0 +1,154 @@
+Team Members
+============
+
+Angie (SENIOR, 8h)
+Bert (NORMAL, 8h)
+Charles (JUNIOR, 8h)
+
+Start of Sprint 1
+=================
+
+- Day 1 00:00 - Angie started task LIO-31415 (their estimation was 1.4h, the one of the team was 2.176h)
+- Day 1 00:00 - Bert started task LIO-31421 (their estimation was 15.939h, the one of the team was 22.994h)
+- Day 1 00:00 - Charles started task LIO-31416 (their estimation was 8h, the one of the team was 7.444h)
+- Day 1 01:24 - Angie finished task LIO-31415 in 1.4h
+- Day 1 01:24 - Angie started task LIO-31417 (their estimation was 5.6h, the one of the team was 7.971h)
+- Day 1 07:00 - Angie finished task LIO-31417 in 5.6h
+- Day 1 07:00 - Angie started task LIO-31418 (their estimation was 11.2h, the one of the team was 22.601h)
+- Day 3 00:00 - Bert finished task LIO-31421 in 16h
+- Day 3 00:00 - Bert started task LIO-31424 (their estimation was 8.373h, the one of the team was 11.163h)
+- Day 3 00:00 - Charles finished task LIO-31416 in 16h
+- Day 3 00:00 - Charles started task LIO-31422 (their estimation was 24.036h, the one of the team was 17.115h)
+- Day 3 02:12 - Angie finished task LIO-31418 in 11.2h
+- Day 3 02:12 - Angie started task LIO-31419 (their estimation was 1.4h, the one of the team was 1.949h)
+- Day 3 03:36 - Angie finished task LIO-31419 in 1.4h
+- Day 3 03:36 - Angie started task LIO-31420 (their estimation was 5.6h, the one of the team was 12.631h)
+- Day 4 00:00 - Bert finished task LIO-31424 in 8h
+- Day 4 00:00 - Bert started task LIO-31428 (their estimation was 1.993h, the one of the team was 2.394h)
+- Day 4 01:12 - Angie finished task LIO-31420 in 5.6h
+- Day 4 01:12 - Angie started task LIO-31423 (their estimation was 5.6h, the one of the team was 10.697h)
+- Day 4 02:00 - Bert finished task LIO-31428 in 2h
+- Day 4 02:00 - Bert started task LIO-31430 (their estimation was 16.131h, the one of the team was 22.801h)
+- Day 4 06:48 - Angie finished task LIO-31423 in 5.6h
+- Day 4 06:48 - Angie started task LIO-31426 (their estimation was 11.2h, the one of the team was 20.157h)
+- Day 6 02:00 - Angie finished task LIO-31426 in 11.2h
+- Day 6 02:00 - Angie started task LIO-31427 (their estimation was 5.6h, the one of the team was 8.755h)
+- Day 6 02:00 - Bert finished task LIO-31430 in 16h
+- Day 6 02:00 - Bert started task LIO-31432 (their estimation was 8.19h, the one of the team was 10.303h)
+- Day 6 07:36 - Angie finished task LIO-31427 in 5.6h
+- Day 6 07:36 - Angie started task LIO-31431 (their estimation was 11.2h, the one of the team was 14.771h)
+- Day 7 00:00 - Charles finished task LIO-31422 in 32h
+- Day 7 00:00 - Charles started task LIO-31425 (their estimation was 22.59h, the one of the team was 11.857h)
+- Day 7 02:00 - Bert finished task LIO-31432 in 8h
+- Day 7 02:00 - Bert started task LIO-31433 (their estimation was 16.849h, the one of the team was 23.986h)
+- Day 8 02:48 - Angie finished task LIO-31431 in 11.2h
+- Day 8 02:48 - Angie started task LIO-31434 (their estimation was 1.4h, the one of the team was 2.459h)
+- Day 8 04:12 - Angie finished task LIO-31434 in 1.4h
+- Day 8 04:12 - Angie started task LIO-31435 (their estimation was 1.4h, the one of the team was 2.585h)
+- Day 8 05:36 - Angie finished task LIO-31435 in 1.4h
+- Day 8 05:36 - Angie started task LIO-31436 (their estimation was 5.6h, the one of the team was 9.718h)
+- Day 9 00:00 - Charles finished task LIO-31425 in 16h
+- Day 9 00:00 - Charles started task LIO-31429 (their estimation was 5.52h, the one of the team was 2.999h)
+- Day 9 02:00 - Bert finished task LIO-31433 in 16h
+- Day 9 03:12 - Angie finished task LIO-31436 in 5.6h
+- Day 9 04:00 - Charles finished task LIO-31429 in 4h
+
+Start of Sprint 2
+=================
+
+- Day 1 00:00 - Angie started task LIO-31437 (their estimation was 5.6h, the one of the team was 10.482h)
+- Day 1 00:00 - Bert started task LIO-31439 (their estimation was 1.953h, the one of the team was 2.541h)
+- Day 1 00:00 - Charles started task LIO-31441 (their estimation was 4.964h, the one of the team was 2.801h)
+- Day 1 02:00 - Bert finished task LIO-31439 in 2h
+- Day 1 02:00 - Bert started task LIO-31440 (their estimation was 15.562h, the one of the team was 14.254h)
+- Day 1 04:00 - Charles finished task LIO-31441 in 4h
+- Day 1 04:00 - Charles started task LIO-31445 (their estimation was 48h, the one of the team was 24.925h)
+- Day 1 05:36 - Angie finished task LIO-31437 in 5.6h
+- Day 1 05:36 - Angie started task LIO-31438 (their estimation was 11.2h, the one of the team was 17.394h)
+- Day 3 00:48 - Angie finished task LIO-31438 in 11.2h
+- Day 3 00:48 - Angie started task LIO-31442 (their estimation was 5.6h, the one of the team was 12.028h)
+- Day 3 02:00 - Bert finished task LIO-31440 in 16h
+- Day 3 02:00 - Bert started task LIO-31443 (their estimation was 1.958h, the one of the team was 1.875h)
+- Day 3 04:00 - Bert finished task LIO-31443 in 2h
+- Day 3 04:00 - Bert started task LIO-31446 (their estimation was 7.896h, the one of the team was 10.798h)
+- Day 3 06:24 - Angie finished task LIO-31442 in 5.6h
+- Day 3 06:24 - Angie started task LIO-31444 (their estimation was 5.6h, the one of the team was 8.947h)
+- Day 4 03:60 - Angie finished task LIO-31444 in 5.6h
+- Day 4 03:60 - Angie started task LIO-31447 (their estimation was 11.2h, the one of the team was 19.32h)
+- Day 4 04:00 - Bert finished task LIO-31446 in 8h
+- Day 4 04:00 - Bert started task LIO-31448 (their estimation was 16.545h, the one of the team was 15.287h)
+- Day 5 04:00 - Charles finished task LIO-31445 in 32h
+- Day 5 04:00 - Charles started task LIO-31456 (their estimation was 4.095h, the one of the team was 2.549h)
+- Day 5 07:12 - Angie finished task LIO-31447 in 11.2h
+- Day 5 07:12 - Angie started task LIO-31449 (their estimation was 1.4h, the one of the team was 1.863h)
+- Day 6 00:00 - Charles finished task LIO-31456 in 4h
+- Day 6 00:00 - Charles started task LIO-31459 (their estimation was 27.642h, the one of the team was 18.6h)
+- Day 6 00:36 - Angie finished task LIO-31449 in 1.4h
+- Day 6 00:36 - Angie started task LIO-31450 (their estimation was 5.6h, the one of the team was 8.237h)
+- Day 6 04:00 - Bert finished task LIO-31448 in 16h
+- Day 6 04:00 - Bert started task LIO-31451 (their estimation was 8.41h, the one of the team was 8.54h)
+- Day 6 06:12 - Angie finished task LIO-31450 in 5.6h
+- Day 6 06:12 - Angie started task LIO-31453 (their estimation was 5.6h, the one of the team was 8.021h)
+- Day 7 03:48 - Angie finished task LIO-31453 in 5.6h
+- Day 7 03:48 - Angie started task LIO-31454 (their estimation was 11.2h, the one of the team was 25.273h)
+- Day 7 04:00 - Bert finished task LIO-31451 in 8h
+- Day 7 04:00 - Bert started task LIO-31452 (their estimation was 2.2h, the one of the team was 3.107h)
+- Day 7 06:00 - Bert finished task LIO-31452 in 2h
+- Day 7 06:00 - Bert started task LIO-31457 (their estimation was 17.6h, the one of the team was 25.6h)
+- Day 8 06:60 - Angie finished task LIO-31454 in 11.2h
+- Day 8 06:60 - Angie started task LIO-31455 (their estimation was 5.6h, the one of the team was 12.266h)
+- Day 9 04:36 - Angie finished task LIO-31455 in 5.6h
+- Day 9 04:36 - Angie started task LIO-31458 (their estimation was 1.4h, the one of the team was 2.2h)
+- Day 9 05:60 - Angie finished task LIO-31458 in 1.4h
+- Day 9 06:00 - Bert finished task LIO-31457 in 16h
+- Day 10 00:00 - Charles finished task LIO-31459 in 32h
+
+Start of Sprint 3
+=================
+
+- Day 1 00:00 - Angie started task LIO-31460 (their estimation was 11.2h, the one of the team was 21.076h)
+- Day 1 00:00 - Bert started task LIO-31461 (their estimation was 15.018h, the one of the team was 21.985h)
+- Day 1 00:00 - Charles started task LIO-31463 (their estimation was 21.869h, the one of the team was 15.823h)
+- Day 2 03:12 - Angie finished task LIO-31460 in 11.2h
+- Day 2 03:12 - Angie started task LIO-31464 (their estimation was 11.2h, the one of the team was 16.41h)
+- Day 3 00:00 - Bert finished task LIO-31461 in 16h
+- Day 3 00:00 - Bert started task LIO-31462 (their estimation was 1.974h, the one of the team was 2.154h)
+- Day 3 02:00 - Bert finished task LIO-31462 in 2h
+- Day 3 02:00 - Bert started task LIO-31466 (their estimation was 1.848h, the one of the team was 2.223h)
+- Day 3 04:00 - Bert finished task LIO-31466 in 2h
+- Day 3 04:00 - Bert started task LIO-31469 (their estimation was 17.42h, the one of the team was 18.408h)
+- Day 3 06:24 - Angie finished task LIO-31464 in 11.2h
+- Day 3 06:24 - Angie started task LIO-31467 (their estimation was 5.6h, the one of the team was 9.31h)
+- Day 4 03:60 - Angie finished task LIO-31467 in 5.6h
+- Day 4 03:60 - Angie started task LIO-31468 (their estimation was 1.4h, the one of the team was 2.99h)
+- Day 4 05:24 - Angie finished task LIO-31468 in 1.4h
+- Day 4 05:24 - Angie started task LIO-31471 (their estimation was 5.6h, the one of the team was 11.61h)
+- Day 5 00:00 - Charles finished task LIO-31463 in 32h
+- Day 5 00:00 - Charles started task LIO-31465 (their estimation was 3.353h, the one of the team was 2.27h)
+- Day 5 02:60 - Angie finished task LIO-31471 in 5.6h
+- Day 5 02:60 - Angie started task LIO-31473 (their estimation was 5.6h, the one of the team was 9.026h)
+- Day 5 04:00 - Bert finished task LIO-31469 in 16h
+- Day 5 04:00 - Bert started task LIO-31470 (their estimation was 7.2h, the one of the team was 9.499h)
+- Day 5 04:00 - Charles finished task LIO-31465 in 4h
+- Day 5 04:00 - Charles started task LIO-31478 (their estimation was 2h, the one of the team was 1.836h)
+- Day 6 00:00 - Charles finished task LIO-31478 in 4h
+- Day 6 00:00 - Charles started task LIO-31480 (their estimation was 48h, the one of the team was 24.908h)
+- Day 6 00:36 - Angie finished task LIO-31473 in 5.6h
+- Day 6 00:36 - Angie started task LIO-31474 (their estimation was 11.2h, the one of the team was 14.601h)
+- Day 6 04:00 - Bert finished task LIO-31470 in 8h
+- Day 6 04:00 - Bert started task LIO-31472 (their estimation was 8.265h, the one of the team was 10.542h)
+- Day 7 03:48 - Angie finished task LIO-31474 in 11.2h
+- Day 7 03:48 - Angie started task LIO-31475 (their estimation was 5.6h, the one of the team was 10.662h)
+- Day 7 04:00 - Bert finished task LIO-31472 in 8h
+- Day 7 04:00 - Bert started task LIO-31476 (their estimation was 2.165h, the one of the team was 3.098h)
+- Day 7 06:00 - Bert finished task LIO-31476 in 2h
+- Day 7 06:00 - Bert started task LIO-31477 (their estimation was 15.441h, the one of the team was 24.88h)
+- Day 8 01:24 - Angie finished task LIO-31475 in 5.6h
+- Day 8 01:24 - Angie started task LIO-31479 (their estimation was 1.4h, the one of the team was 2.193h)
+- Day 8 02:48 - Angie finished task LIO-31479 in 1.4h
+- Day 8 02:48 - Angie started task LIO-31481 (their estimation was 11.2h, the one of the team was 21.014h)
+- Day 9 05:60 - Angie finished task LIO-31481 in 11.2h
+- Day 9 06:00 - Bert finished task LIO-31477 in 16h
+- Day 10 00:00 - Charles finished task LIO-31480 in 32h
+
+

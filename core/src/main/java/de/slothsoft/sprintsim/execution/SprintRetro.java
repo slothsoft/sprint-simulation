@@ -19,6 +19,10 @@ public class SprintRetro {
 		this.remainingHours = remainingHours;
 	}
 
+	public Member[] getMembers() {
+		return this.members;
+	}
+
 	/**
 	 * Returns the additional hours necessary to finish the sprint. If one team member
 	 * needs 2 more hours, will return 2. If one team member needs 2 more hours, and

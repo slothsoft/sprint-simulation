@@ -21,6 +21,7 @@ public class Simulation {
 	private Long seed;
 
 	private final List<SimulationListener> simulationListeners = new ArrayList<>();
+	private TimelineSimulationListener timelineSimulationListener;
 
 	public Simulation(Member... members) {
 		this.members = Objects.requireNonNull(members);
@@ -30,17 +31,16 @@ public class Simulation {
 		return runMilestone(1);
 	}
 
-	
 	public SimulationResult runMilestone(int numberOfSprints) {
-		final SimulationInfo info = new SimulationInfo(this.members, this.taskConfig, this.sprintConfig, numberOfSprints);
+		final SimulationInfo info = createInfo(numberOfSprints);
 		fireListeners(listener -> listener.simulationStarted(info));
 
 		final SprintGenerator generator = createGenerator();
 		final SprintExecutor executor = createExecutor();
 
-		SprintPlanning[] sprintPlannings = new SprintPlanning[numberOfSprints];
-		SprintRetro[] sprintRetros = new SprintRetro[numberOfSprints];
-		
+		final SprintPlanning[] sprintPlannings = new SprintPlanning[numberOfSprints];
+		final SprintRetro[] sprintRetros = new SprintRetro[numberOfSprints];
+
 		for (int sprintNumber = 0; sprintNumber < numberOfSprints; sprintNumber++) {
 			final SprintPlanning sprintPlanning = generator.generate();
 			fireListeners(listener -> listener.sprintPlanned(sprintPlanning));
@@ -53,11 +53,16 @@ public class Simulation {
 
 		final SimulationResult result = new SimulationResult(sprintPlannings, sprintRetros);
 		fireListeners(listener -> listener.simulationFinished(result));
-		return result; 
+		return result;
 	}
-	
+
+	SimulationInfo createInfo(int numberOfSprints) {
+		return new SimulationInfo(this.members, this.taskConfig, this.sprintConfig, numberOfSprints);
+	}
+
 	SprintGenerator createGenerator() {
-		return new SprintGenerator(this.members).taskConfig(this.taskConfig).sprintConfig(this.sprintConfig).seed(this.seed);
+		return new SprintGenerator(this.members).taskConfig(this.taskConfig).sprintConfig(this.sprintConfig)
+				.seed(this.seed);
 	}
 
 	SprintExecutor createExecutor() {
@@ -77,6 +82,22 @@ public class Simulation {
 
 	public void removeSimulationListener(SimulationListener simulationListener) {
 		this.simulationListeners.remove(simulationListener);
+	}
+
+	public void addTimelineListener(TimelineListener simulationListener) {
+		getSafeTimelineSimulationListener().addTimelineListener(simulationListener);
+	}
+
+	public void removeTimelineListener(TimelineListener simulationListener) {
+		getSafeTimelineSimulationListener().removeTimelineListener(simulationListener);
+	}
+
+	TimelineSimulationListener getSafeTimelineSimulationListener() {
+		if (this.timelineSimulationListener == null) {
+			this.timelineSimulationListener = new TimelineSimulationListener();
+			this.simulationListeners.add(this.timelineSimulationListener);
+		}
+		return this.timelineSimulationListener;
 	}
 
 	public TaskConfig getTaskConfig() {
@@ -119,18 +140,16 @@ public class Simulation {
 	}
 
 	public Long getSeed() {
-		return seed;
+		return this.seed;
 	}
 
 	public Simulation seed(Long newSeed) {
 		setSeed(newSeed);
 		return this;
 	}
-	
 
 	public void setSeed(Long seed) {
 		this.seed = seed;
 	}
 
-	
 }

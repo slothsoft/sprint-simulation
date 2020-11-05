@@ -1,9 +1,11 @@
 package de.slothsoft.sprintsim.simulation;
 
+import java.util.EventListener;
+
 import de.slothsoft.sprintsim.execution.SprintRetro;
 import de.slothsoft.sprintsim.generation.SprintPlanning;
 
-public interface SimulationListener {
+public interface SimulationListener extends EventListener {
 
 	class Adapter implements SimulationListener {
 
