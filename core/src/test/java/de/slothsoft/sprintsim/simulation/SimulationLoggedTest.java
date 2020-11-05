@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.slothsoft.sprintsim.Member;
+import de.slothsoft.sprintsim.io.TextComponentWriter;
 
 public class SimulationLoggedTest {
 
@@ -25,7 +26,7 @@ public class SimulationLoggedTest {
 		this.log = new StringBuilder();
 
 		this.loggingListener = new LoggingSimulationListener()
-				.logger(string -> this.log.append(string).append(LINE_BREAK));
+				.componentWriter(new TextComponentWriter(string -> this.log.append(string).append(LINE_BREAK)));
 
 		this.simulation = new Simulation().seed(Long.valueOf(9876543210l));
 		this.simulation.addSimulationListener(this.loggingListener);

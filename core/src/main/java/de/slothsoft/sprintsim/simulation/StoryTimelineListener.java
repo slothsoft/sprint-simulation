@@ -11,17 +11,16 @@ import de.slothsoft.sprintsim.Task;
 import de.slothsoft.sprintsim.execution.SprintExecutor;
 import de.slothsoft.sprintsim.generation.SprintGenerator;
 import de.slothsoft.sprintsim.generation.SprintPlanning;
-import de.slothsoft.sprintsim.io.Logger;
+import de.slothsoft.sprintsim.io.ComponentWriter;
+import de.slothsoft.sprintsim.io.TextComponentWriter;
 
 public class StoryTimelineListener implements TimelineListener {
-
-	// TODO: test
 
 	private static final int FIRST_TASK = 31415;
 	/** A <code>String</code> for easier story telling. */
 	private static final String TASK_DATA_NAME = "name"; //$NON-NLS-1$
 
-	private Logger logger = System.out::println;
+	private ComponentWriter componentWriter = new TextComponentWriter(System.out::println);
 	private String taskIdPrefix = "LIO"; //$NON-NLS-1$
 	private int waitMillisPerHour;
 
@@ -101,14 +100,14 @@ public class StoryTimelineListener implements TimelineListener {
 
 		// log
 
-		this.logger.logTitle(Messages.getString("TeamMembersTitle")); //$NON-NLS-1$
+		this.componentWriter.writeTitle(Messages.getString("TeamMembersTitle")); //$NON-NLS-1$
 
 		for (final Member member : members) {
-			this.logger.log(MessageFormat.format(Messages.getString("TeamMemberPattern"), //$NON-NLS-1$
+			this.componentWriter.writeLine(MessageFormat.format(Messages.getString("TeamMemberPattern"), //$NON-NLS-1$
 					member.getUserData(LoggingSimulationListener.MEMBER_DATA_NAME), member.getWorkPerformance(),
 					String.valueOf(member.getWorkHoursPerDay())));
 		}
-		this.logger.logEmpty();
+		this.componentWriter.writeEmpty();
 	}
 
 	private void logSprintStarted(TimelineEvent event) {
@@ -121,7 +120,7 @@ public class StoryTimelineListener implements TimelineListener {
 
 		// log
 
-		this.logger.logTitle(
+		this.componentWriter.writeTitle(
 				MessageFormat.format(Messages.getString("SprintStartPattern"), String.valueOf(this.sprintNumber)));
 	}
 
@@ -150,7 +149,7 @@ public class StoryTimelineListener implements TimelineListener {
 
 		// log
 
-		this.logger.log(MessageFormat.format(Messages.getString("TaskStartedPattern"), //$NON-NLS-1$
+		this.componentWriter.writeLine(MessageFormat.format(Messages.getString("TaskStartedPattern"), //$NON-NLS-1$
 				member.getUserData(LoggingSimulationListener.MEMBER_DATA_NAME), task.getUserData(TASK_DATA_NAME),
 				this.numberFormat.format(memberEstimation), this.numberFormat.format(teamEstimation),
 				stringify(event.day, event.hour)));
@@ -167,7 +166,7 @@ public class StoryTimelineListener implements TimelineListener {
 
 		// log
 
-		this.logger.log(MessageFormat.format(Messages.getString("TaskFinishedPattern"), //$NON-NLS-1$
+		this.componentWriter.writeLine(MessageFormat.format(Messages.getString("TaskFinishedPattern"), //$NON-NLS-1$
 				member.getUserData(LoggingSimulationListener.MEMBER_DATA_NAME), task.getUserData(TASK_DATA_NAME),
 				this.numberFormat.format(necessaryHours), stringify(event.day, event.hour)));
 	}
@@ -184,7 +183,7 @@ public class StoryTimelineListener implements TimelineListener {
 
 	@SuppressWarnings("unused")
 	private void logSprintFinished(TimelineEvent event) {
-		this.logger.logEmpty();
+		this.componentWriter.writeEmpty();
 	}
 
 	@SuppressWarnings("unused")
@@ -192,17 +191,17 @@ public class StoryTimelineListener implements TimelineListener {
 		// nothing to do yet
 	}
 
-	public Logger getLogger() {
-		return this.logger;
+	public ComponentWriter getComponentWriter() {
+		return this.componentWriter;
 	}
 
-	public StoryTimelineListener logger(Logger newLogger) {
-		setLogger(newLogger);
+	public StoryTimelineListener componentWriter(ComponentWriter newComponentWriter) {
+		setComponentWriter(newComponentWriter);
 		return this;
 	}
 
-	public void setLogger(Logger logger) {
-		this.logger = Objects.requireNonNull(logger);
+	public void setComponentWriter(ComponentWriter componentWriter) {
+		this.componentWriter = Objects.requireNonNull(componentWriter);
 	}
 
 	public int getWaitMillisPerHour() {

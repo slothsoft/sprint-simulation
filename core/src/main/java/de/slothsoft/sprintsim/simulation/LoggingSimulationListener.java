@@ -6,7 +6,8 @@ import de.slothsoft.sprintsim.Member;
 import de.slothsoft.sprintsim.Task;
 import de.slothsoft.sprintsim.execution.SprintRetro;
 import de.slothsoft.sprintsim.generation.SprintPlanning;
-import de.slothsoft.sprintsim.io.Logger;
+import de.slothsoft.sprintsim.io.ComponentWriter;
+import de.slothsoft.sprintsim.io.TextComponentWriter;
 
 public class LoggingSimulationListener implements SimulationListener {
 
@@ -14,13 +15,14 @@ public class LoggingSimulationListener implements SimulationListener {
 			"Hans", "Ike", "James", "Klaus", "Lars", "Markus", "Norbert", "Olaf", "Paul", "Quentin", "Ralf", "Steffi", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$
 			"Tony", "Ulf", "Viktor", "Wolfgang", "Xerox", "Yens", "Zack"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 	private static final int FIRST_TASK = 31415;
+
 	/** A <code>String</code> for easier story telling. */
 	public static final String TASK_DATA_NAME = "name"; //$NON-NLS-1$
 	/** A <code>String</code> for easier story telling. */
 	public static final String MEMBER_DATA_NAME = "name"; //$NON-NLS-1$
 
 	private String taskIdPrefix = "LIO"; //$NON-NLS-1$
-	private Logger logger = System.out::println;
+	private ComponentWriter componentWriter = new TextComponentWriter(System.out::println);
 	private boolean printTasksOverview = true;
 
 	private int taskCount;
@@ -32,11 +34,11 @@ public class LoggingSimulationListener implements SimulationListener {
 		this.taskCount = 0;
 
 		if (simulationInfo.getNumberOfSprints() == 1) {
-			this.loggingDelegator = new LoggingOneSprintSimulationListener().logger(this.logger)
+			this.loggingDelegator = new LoggingOneSprintSimulationListener().componentWriter(this.componentWriter)
 					.taskNameSupplier(task -> (String) task.getUserData(TASK_DATA_NAME))
 					.printTasksOverview(this.printTasksOverview);
 		} else {
-			this.loggingDelegator = new LoggingSprintsSimulationListener().logger(this.logger)
+			this.loggingDelegator = new LoggingSprintsSimulationListener().componentWriter(this.componentWriter)
 					.taskNameSupplier(task -> (String) task.getUserData(TASK_DATA_NAME))
 					.printTasksOverview(this.printTasksOverview);
 		}
@@ -86,17 +88,17 @@ public class LoggingSimulationListener implements SimulationListener {
 		this.loggingDelegator.simulationFinished(simulationResult);
 	}
 
-	public Logger getLogger() {
-		return this.logger;
+	public ComponentWriter getComponentWriter() {
+		return this.componentWriter;
 	}
 
-	public LoggingSimulationListener logger(Logger newLogger) {
-		setLogger(newLogger);
+	public LoggingSimulationListener componentWriter(ComponentWriter newComponentWriter) {
+		setComponentWriter(newComponentWriter);
 		return this;
 	}
 
-	public void setLogger(Logger logger) {
-		this.logger = Objects.requireNonNull(logger);
+	public void setComponentWriter(ComponentWriter componentWriter) {
+		this.componentWriter = Objects.requireNonNull(componentWriter);
 	}
 
 	public String getTaskIdPrefix() {

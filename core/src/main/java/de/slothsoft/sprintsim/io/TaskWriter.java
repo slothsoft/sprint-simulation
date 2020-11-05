@@ -9,12 +9,14 @@ import java.util.function.IntFunction;
 import de.slothsoft.sprintsim.Task;
 import de.slothsoft.sprintsim.execution.SprintExecutor;
 import de.slothsoft.sprintsim.generation.SprintGenerator;
+import de.slothsoft.sprintsim.io.ComponentWriter.TableInfo;
 
 public class TaskWriter {
 
-	public static final Function<Task, String> DEFAULT_TASK_NAME_SUPPLIER = task -> "TASK-" + String.valueOf(task.hashCode()); //$NON-NLS-1$
+	public static final Function<Task, String> DEFAULT_TASK_NAME_SUPPLIER = task -> "TASK-" //$NON-NLS-1$
+			+ String.valueOf(task.hashCode());
 
-	private final TableWriter tableWriter;
+	private final ComponentWriter componentWriter;
 
 	private IntFunction<String> memberNameSupplier = i -> String.valueOf(i);
 	private Function<Task, String> taskNameSupplier = DEFAULT_TASK_NAME_SUPPLIER;
@@ -22,13 +24,17 @@ public class TaskWriter {
 	private boolean writeEstimationInfo;
 	private boolean writeExecutionInfo;
 
-	public TaskWriter(TableWriter tableWriter) {
-		this.tableWriter = Objects.requireNonNull(tableWriter);
+	public TaskWriter(ComponentWriter componentWriter) {
+		this.componentWriter = Objects.requireNonNull(componentWriter);
 	}
 
 	public void writeTasks(Task... tasks) {
+		this.componentWriter.startTable(new TableInfo());
+
 		writeTasksHeaders(tasks[0]);
 		writeTaskLines(tasks);
+
+		this.componentWriter.endTable();
 	}
 
 	private void writeTasksHeaders(Task task) {
@@ -52,7 +58,7 @@ public class TaskWriter {
 			headers.add(Messages.getString("NecessaryTime")); //$NON-NLS-1$
 		}
 
-		this.tableWriter.writeHeader(headers.toArray(new String[headers.size()]));
+		this.componentWriter.writeTableHeader(headers.toArray(new String[headers.size()]));
 	}
 
 	private void writeTaskLines(Task[] tasks) {
@@ -83,7 +89,7 @@ public class TaskWriter {
 			cells.add(task.getUserData(SprintExecutor.TASK_DATA_NECESSARY_HOURS));
 		}
 
-		this.tableWriter.writeLine(cells.toArray());
+		this.componentWriter.writeTableLine(cells.toArray());
 	}
 
 	public IntFunction<String> getMemberNameSupplier() {

@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.slothsoft.sprintsim.Member;
+import de.slothsoft.sprintsim.io.TextComponentWriter;
 
 public class StoryTimelineListenerTest {
 
@@ -25,8 +26,8 @@ public class StoryTimelineListenerTest {
 		this.log = new StringBuilder();
 
 		this.simulation = new Simulation().seed(Long.valueOf(9876543210l));
-		this.simulation.addTimelineListener(
-				new StoryTimelineListener().logger(string -> this.log.append(string).append(LINE_BREAK)));
+		this.simulation.addTimelineListener(new StoryTimelineListener()
+				.componentWriter(new TextComponentWriter(string -> this.log.append(string).append(LINE_BREAK))));
 	}
 
 	@Test

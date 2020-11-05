@@ -12,8 +12,8 @@ import de.slothsoft.sprintsim.generation.SprintGenerator;
 public class TaskWriterTest {
 
 	private final StringBuilder sb = new StringBuilder();
-	private final TableWriter tableWriter = new LogTableWriter(s -> this.sb.append(s).append('\n'));
-	private final TaskWriter taskWriter = new TaskWriter(this.tableWriter);
+	private final ComponentWriter componentWriter = new TextComponentWriter(s -> this.sb.append(s).append('\n'));
+	private final TaskWriter taskWriter = new TaskWriter(this.componentWriter);
 
 	@Test
 	public void testWriteTasks() {

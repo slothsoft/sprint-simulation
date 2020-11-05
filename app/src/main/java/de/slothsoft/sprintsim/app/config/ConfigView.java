@@ -5,9 +5,7 @@ import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.accordion.AccordionPanel;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-import de.slothsoft.sprintsim.Member;
-import de.slothsoft.sprintsim.config.SprintConfig;
-import de.slothsoft.sprintsim.config.TaskConfig;
+import de.slothsoft.sprintsim.simulation.Simulation;
 
 public class ConfigView extends VerticalLayout {
 
@@ -43,15 +41,13 @@ public class ConfigView extends VerticalLayout {
 		addAndExpand(accordion);
 	}
 
-	public Member[] createMembers() {
-		return this.memberConfigView.createMembers();
+	public Simulation createSimulation() {
+		final Simulation simulation = new Simulation(this.memberConfigView.createMembers());
+		simulation.sprintConfig(this.sprintConfigView.createConfig()).taskConfig(this.taskConfigView.createConfig());
+		return simulation;
 	}
 
-	public SprintConfig createSprintConfig() {
-		return this.sprintConfigView.createConfig();
-	}
-
-	public TaskConfig createTaskConfig() {
-		return this.taskConfigView.createConfig();
+	public int fetchNumberOfSprints() {
+		return this.sprintConfigView.fetchNumberOfSprints();
 	}
 }

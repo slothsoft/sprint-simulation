@@ -9,12 +9,9 @@ import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.material.Material;
 
-import de.slothsoft.sprintsim.Member;
 import de.slothsoft.sprintsim.app.config.ConfigView;
 import de.slothsoft.sprintsim.app.result.ResultView;
-import de.slothsoft.sprintsim.config.SprintConfig;
-import de.slothsoft.sprintsim.config.TaskConfig;
-import de.slothsoft.sprintsim.io.HtmlLogger;
+import de.slothsoft.sprintsim.io.HtmlComponentWriter;
 import de.slothsoft.sprintsim.simulation.LoggingSimulationListener;
 import de.slothsoft.sprintsim.simulation.Simulation;
 
@@ -51,17 +48,12 @@ public class MainView extends VerticalLayout {
 
 	@SuppressWarnings("unused")
 	void onRunEvent(ClickEvent<Button> event) {
-		final Member[] members = this.configView.createMembers();
-		final SprintConfig sprintConfig = this.configView.createSprintConfig();
-		final TaskConfig taskConfig = this.configView.createTaskConfig();
+		final HtmlComponentWriter writer = new HtmlComponentWriter();
 
-		final HtmlLogger logger = new HtmlLogger();
+		final Simulation simulation = this.configView.createSimulation();
+		simulation.addSimulationListener(new LoggingSimulationListener().componentWriter(writer));
+		simulation.runMilestone(this.configView.fetchNumberOfSprints());
 
-		final Simulation simulation = new Simulation(members);
-		simulation.sprintConfig(sprintConfig).taskConfig(taskConfig);
-		simulation.addSimulationListener(new LoggingSimulationListener().logger(logger));
-		simulation.runSprint();
-
-		this.resultView.setValue(logger.getHtml());
+		this.resultView.setValue(writer.getHtml());
 	}
 }
