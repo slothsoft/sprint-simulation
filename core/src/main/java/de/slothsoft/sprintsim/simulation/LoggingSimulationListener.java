@@ -21,6 +21,7 @@ public class LoggingSimulationListener implements SimulationListener {
 
 	private String taskIdPrefix = "LIO"; //$NON-NLS-1$
 	private Logger logger = System.out::println;
+	private boolean printTasksOverview = true;
 
 	private int taskCount;
 	private SimulationListener loggingDelegator;
@@ -32,10 +33,12 @@ public class LoggingSimulationListener implements SimulationListener {
 
 		if (simulationInfo.getNumberOfSprints() == 1) {
 			this.loggingDelegator = new LoggingOneSprintSimulationListener().logger(this.logger)
-					.taskNameSupplier(task -> (String) task.getUserData(TASK_DATA_NAME));
+					.taskNameSupplier(task -> (String) task.getUserData(TASK_DATA_NAME))
+					.printTasksOverview(this.printTasksOverview);
 		} else {
 			this.loggingDelegator = new LoggingSprintsSimulationListener().logger(this.logger)
-					.taskNameSupplier(task -> (String) task.getUserData(TASK_DATA_NAME));
+					.taskNameSupplier(task -> (String) task.getUserData(TASK_DATA_NAME))
+					.printTasksOverview(this.printTasksOverview);
 		}
 
 		this.loggingDelegator.simulationStarted(simulationInfo);
@@ -107,6 +110,19 @@ public class LoggingSimulationListener implements SimulationListener {
 
 	public void setTaskIdPrefix(String taskIdPrefix) {
 		this.taskIdPrefix = Objects.requireNonNull(taskIdPrefix);
+	}
+
+	public boolean isPrintTasksOverview() {
+		return this.printTasksOverview;
+	}
+
+	public LoggingSimulationListener printTasksOverview(boolean newPrintTasksOverview) {
+		setPrintTasksOverview(newPrintTasksOverview);
+		return this;
+	}
+
+	public void setPrintTasksOverview(boolean printTasksOverview) {
+		this.printTasksOverview = printTasksOverview;
 	}
 
 }

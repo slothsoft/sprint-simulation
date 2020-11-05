@@ -17,15 +17,18 @@ public class SimulationLoggedTest {
 	private static final String LINE_BREAK = "\n";
 
 	StringBuilder log;
+	LoggingSimulationListener loggingListener;
 	Simulation simulation;
 
 	@Before
 	public void setUp() {
 		this.log = new StringBuilder();
 
+		this.loggingListener = new LoggingSimulationListener()
+				.logger(string -> this.log.append(string).append(LINE_BREAK));
+
 		this.simulation = new Simulation().seed(Long.valueOf(9876543210l));
-		this.simulation.addSimulationListener(
-				new LoggingSimulationListener().logger(string -> this.log.append(string).append(LINE_BREAK)));
+		this.simulation.addSimulationListener(this.loggingListener);
 	}
 
 	@Test
@@ -58,6 +61,24 @@ public class SimulationLoggedTest {
 	}
 
 	@Test
+	public void testSimpleWithoutTaskOverview() throws Exception {
+		// Arrange
+		this.loggingListener.printTasksOverview(false);
+
+		final Member senior = Member.createSenior();
+		final Member normal = Member.createNormal();
+		final Member junior = Member.createJunior();
+
+		this.simulation.setMembers(senior, normal, junior);
+
+		// Act
+		this.simulation.runSprint();
+
+		// Assert
+		assertLogEqualsFile("simple-no-task-overview-9876543210.txt");
+	}
+
+	@Test
 	public void testMulti() throws Exception {
 		// Arrange
 		final Member senior = Member.createSenior();
@@ -71,5 +92,23 @@ public class SimulationLoggedTest {
 
 		// Assert
 		assertLogEqualsFile("multi-9876543210.txt");
+	}
+
+	@Test
+	public void testMultiWithoutTaskOverview() throws Exception {
+		// Arrange
+		this.loggingListener.printTasksOverview(false);
+
+		final Member senior = Member.createSenior();
+		final Member normal = Member.createNormal();
+		final Member junior = Member.createJunior();
+
+		this.simulation.setMembers(senior, normal, junior);
+
+		// Act
+		this.simulation.runMilestone(3);
+
+		// Assert
+		assertLogEqualsFile("multi-no-task-overview-9876543210.txt");
 	}
 }

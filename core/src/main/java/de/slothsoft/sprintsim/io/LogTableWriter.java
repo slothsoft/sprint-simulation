@@ -29,7 +29,7 @@ public class LogTableWriter implements TableWriter {
 		final String headersString = Arrays.stream(headers).map(this::createTableCenterAligned)
 				.collect(Collectors.joining());
 		this.logger.log(headersString);
-		this.logger.log(headersString.replaceAll(".", "=")); //$NON-NLS-1$ //$NON-NLS-2$
+		writeSeparatorLine(headers.length);
 	}
 
 	String createTableCenterAligned(String value) {
@@ -37,6 +37,13 @@ public class LogTableWriter implements TableWriter {
 		final int indentWidth = Math.max(0, this.columnSize - value.length());
 		return this.emptyColumn.substring(0, indentWidth / 2) + value
 				+ this.emptyColumn.substring(0, indentWidth - indentWidth / 2);
+	}
+
+	@Override
+	public void writeSeparatorLine(int columnCount) {
+		final String separatorLine = IntStream.range(0, columnCount * this.columnSize).mapToObj(i -> "=")
+				.collect(Collectors.joining());
+		this.logger.log(separatorLine);
 	}
 
 	@Override

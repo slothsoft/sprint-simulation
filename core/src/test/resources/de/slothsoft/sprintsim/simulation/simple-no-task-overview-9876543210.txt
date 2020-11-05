@@ -1,0 +1,20 @@
+Team Members
+============
+
+Angie (SENIOR, 8h)
+Bert (NORMAL, 8h)
+Charles (JUNIOR, 8h)
+
+Sprint Planning
+===============
+
+Estimated Hours: 249.52595506379896
+Estimated Additional Hours: 9.52595506379896
+
+Sprint Retro
+============
+
+Remaining Hours: 38.79999999999998
+Necessary Additional Hours: -0.0
+
+
