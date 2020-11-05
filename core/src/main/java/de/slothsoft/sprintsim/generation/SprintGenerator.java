@@ -129,20 +129,17 @@ public class SprintGenerator {
 	}
 
 	public Long getSeed() {
-		return seed;
+		return this.seed;
 	}
 
 	public SprintGenerator seed(Long newSeed) {
 		setSeed(newSeed);
 		return this;
 	}
-	
 
 	public void setSeed(Long seed) {
 		this.seed = seed;
 		this.rnd = seed == null ? new Random() : new Random(seed.longValue());
 	}
-	
-	
 
 }

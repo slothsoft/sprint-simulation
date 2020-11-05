@@ -18,6 +18,7 @@ This project was born to simulate sprint planning and execution, and figure out 
 - [Results](#results)
 - [Real Life](#real-life)
 - [Conclusion](#conclusion)
+- [Developer Guide](#developer-guide)
 - [Links](#links)
 
 
@@ -280,7 +281,18 @@ It is not possible to estimate as a team if the actual work performance varies a
 
 
 
+# Developer Guide
+
+To run the Vaadin project, run `mvn jetty:run` and open [http://localhost:8080](http://localhost:8080) in browser.
+
+
+
 # Links
 
 - [DrawIO](https://app.diagrams.net) - to create beautiful diagrams online
+- Vaadin App
+	- [Feature overview](https://vaadin.com/flow)
+	- [Documentation](https://vaadin.com/docs/flow/Overview.html)
+	- [Tutorials](https://vaadin.com/tutorials?q=tag:Flow) 
+	- [Component Java integrations and examples](https://vaadin.com/components)
 
