@@ -6,7 +6,9 @@
 - **Repository:** <https://github.com/slothsoft/sprint-simulation>
 - **Developer Resources:** [Executed Tests](http://slothsoft.github.io/sprint-simulation/tests/), [Code Coverage](http://slothsoft.github.io/sprint-simulation/coverage)
 
-This project was born to simulate sprint planning and execution, and figure out if you can estimate tasks as a group.
+This project was born to simulate sprint planning and execution, and figure out if you can estimate tasks as a group. 
+
+It's also used to get to know [Vaadin](https://vaadin.com/)
 
 
 **Content:**
@@ -283,16 +285,20 @@ It is not possible to estimate as a team if the actual work performance varies a
 
 # Developer Guide
 
-To run the Vaadin project, run `mvn jetty:run` and open [http://localhost:8080](http://localhost:8080) in browser.
+- to see how this project is used, see the [examples](examples/src/main/java/)
+- to run the Vaadin project, run `mvn jetty:run` and open [http://localhost:8080](http://localhost:8080) in browser
+- to see what still needs to be done see the [open issues](https://github.com/slothsoft/sprint-simulation/issues), the [executed tests](http://slothsoft.github.io/sprint-simulation/tests/), and the [code coverage](http://slothsoft.github.io/sprint-simulation/coverage)
+- to update the test documentation run `mvn verify -Pdoc`
 
 
 
 # Links
 
 - [DrawIO](https://app.diagrams.net) - to create beautiful diagrams online
-- Vaadin App
-	- [Feature overview](https://vaadin.com/flow)
-	- [Documentation](https://vaadin.com/docs/flow/Overview.html)
-	- [Tutorials](https://vaadin.com/tutorials?q=tag:Flow) 
-	- [Component Java integrations and examples](https://vaadin.com/components)
+- [Vaadin](https://vaadin.com/) - used to create the basic web app
+    - [Feature overview](https://vaadin.com/flow)
+    - [Documentation](https://vaadin.com/docs/flow/Overview.html)
+    - [Tutorials](https://vaadin.com/tutorials?q=tag:Flow) 
+    - [Component Java integrations and examples](https://vaadin.com/components)
+    - [How to Deploy Your Java App to the Cloud](https://vaadin.com/blog/how-to-deploy-your-java-app-to-the-cloud)
 

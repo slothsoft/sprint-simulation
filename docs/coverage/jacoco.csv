@@ -1,12 +1,17 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-Charts Coverage/core,de.slothsoft.sprintsim.simulation,Simulation,30,198,0,4,11,41,6,20,6,18
+Charts Coverage/core,de.slothsoft.sprintsim.simulation,Simulation,30,229,0,6,11,51,6,25,6,22
+Charts Coverage/core,de.slothsoft.sprintsim.simulation,TimelineEvent,0,50,0,0,0,11,0,6,0,6
 Charts Coverage/core,de.slothsoft.sprintsim.simulation,SimulationListener.Adapter,0,7,0,0,0,5,0,5,0,5
+Charts Coverage/core,de.slothsoft.sprintsim.simulation,TimelineSimulationListener,12,252,1,15,0,44,1,17,0,10
+Charts Coverage/core,de.slothsoft.sprintsim.simulation,TimelineSimulationListener.TaskAndTime,0,82,0,4,0,20,0,6,0,4
 Charts Coverage/core,de.slothsoft.sprintsim.simulation,SimulationResult,0,15,0,0,0,6,0,3,0,3
-Charts Coverage/core,de.slothsoft.sprintsim.simulation,SimulationInfo,0,27,0,0,0,10,0,5,0,5
+Charts Coverage/core,de.slothsoft.sprintsim.simulation,TimelineEvent.Type,0,64,0,0,0,7,0,1,0,1
+Charts Coverage/core,de.slothsoft.sprintsim.simulation,SimulationInfo,67,65,7,7,2,19,9,6,2,6
 Charts Coverage/core,de.slothsoft.sprintsim.simulation,Messages,12,8,0,0,2,2,0,2,0,2
-Charts Coverage/core,de.slothsoft.sprintsim.simulation,LoggingSprintsSimulationListener,6,231,0,2,2,38,2,13,2,12
-Charts Coverage/core,de.slothsoft.sprintsim.simulation,LoggingOneSprintSimulationListener,6,209,0,2,2,35,2,11,2,10
-Charts Coverage/core,de.slothsoft.sprintsim.simulation,LoggingSimulationListener,11,297,0,8,4,36,3,19,3,15
+Charts Coverage/core,de.slothsoft.sprintsim.simulation,LoggingSprintsSimulationListener,9,308,0,4,3,59,3,17,3,15
+Charts Coverage/core,de.slothsoft.sprintsim.simulation,StoryTimelineListener,30,459,2,13,12,92,9,24,7,16
+Charts Coverage/core,de.slothsoft.sprintsim.simulation,LoggingOneSprintSimulationListener,9,224,0,4,3,46,3,14,3,12
+Charts Coverage/core,de.slothsoft.sprintsim.simulation,LoggingSimulationListener,14,318,0,8,5,45,4,21,4,17
 Charts Coverage/core,de.slothsoft.sprintsim,StandardPerformance.new StandardPerformance() {...},0,8,0,0,0,2,0,2,0,2
 Charts Coverage/core,de.slothsoft.sprintsim,StandardPerformance.new StandardPerformance() {...},0,8,0,0,0,2,0,2,0,2
 Charts Coverage/core,de.slothsoft.sprintsim,StandardPerformance,0,34,0,0,0,4,0,1,0,1
@@ -18,11 +23,15 @@ Charts Coverage/core,de.slothsoft.sprintsim,Sprint,0,37,0,0,0,14,0,7,0,7
 Charts Coverage/core,de.slothsoft.sprintsim.config,TaskConfig,23,53,1,3,4,20,4,10,3,8
 Charts Coverage/core,de.slothsoft.sprintsim.config,SprintConfig,20,44,0,0,8,9,4,7,4,7
 Charts Coverage/core,de.slothsoft.sprintsim.config,TaskCreator,9,26,0,0,4,9,2,5,2,5
-Charts Coverage/core,de.slothsoft.sprintsim.io,Logger,0,16,0,0,0,6,0,2,0,2
+Charts Coverage/core,de.slothsoft.sprintsim.io,TextComponentWriter,36,327,2,16,8,56,6,27,4,19
 Charts Coverage/core,de.slothsoft.sprintsim.io,Messages,12,8,0,0,2,2,0,2,0,2
-Charts Coverage/core,de.slothsoft.sprintsim.io,TaskWriter,36,219,2,16,8,55,10,19,8,12
-Charts Coverage/core,de.slothsoft.sprintsim.io,LogTableWriter,16,192,1,7,5,33,4,16,3,13
+Charts Coverage/core,de.slothsoft.sprintsim.io,TaskWriter,36,228,2,16,9,57,10,19,8,12
+Charts Coverage/core,de.slothsoft.sprintsim.io,CellFormat.Alignment,0,34,0,0,0,4,0,1,0,1
+Charts Coverage/core,de.slothsoft.sprintsim.io,HtmlComponentWriter,0,172,0,6,0,34,0,15,0,12
+Charts Coverage/core,de.slothsoft.sprintsim.io,ComponentWriter.TableInfo,3,12,0,0,1,5,1,3,1,3
+Charts Coverage/core,de.slothsoft.sprintsim.io,ComponentWriter,0,4,0,0,0,2,0,1,0,1
+Charts Coverage/core,de.slothsoft.sprintsim.io,CellFormat,0,35,0,8,0,9,0,7,0,3
 Charts Coverage/core,de.slothsoft.sprintsim.generation,SprintGenerator,3,272,0,10,1,59,1,22,1,17
 Charts Coverage/core,de.slothsoft.sprintsim.generation,SprintPlanning,0,23,0,0,0,8,0,4,0,4
 Charts Coverage/core,de.slothsoft.sprintsim.execution,SprintExecutor,0,205,0,10,0,36,0,17,0,12
-Charts Coverage/core,de.slothsoft.sprintsim.execution,SprintRetro,0,28,0,0,0,9,0,4,0,4
+Charts Coverage/core,de.slothsoft.sprintsim.execution,SprintRetro,0,31,0,0,0,10,0,5,0,5

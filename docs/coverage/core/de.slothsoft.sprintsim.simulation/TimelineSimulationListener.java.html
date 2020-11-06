@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>TimelineSimulationListener.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Charts Coverage</a> &gt; <a href="../index.html" class="el_bundle">core</a> &gt; <a href="index.source.html" class="el_package">de.slothsoft.sprintsim.simulation</a> &gt; <span class="el_source">TimelineSimulationListener.java</span></div><h1>TimelineSimulationListener.java</h1><pre class="source lang-java linenums">package de.slothsoft.sprintsim.simulation;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
+import de.slothsoft.sprintsim.Member;
+import de.slothsoft.sprintsim.Task;
+import de.slothsoft.sprintsim.execution.SprintExecutor;
+import de.slothsoft.sprintsim.execution.SprintRetro;
+import de.slothsoft.sprintsim.generation.SprintPlanning;
+import de.slothsoft.sprintsim.simulation.TimelineEvent.Type;
+
+/**
+ * A {@link TimelineListener} that breaks the events of the sprints down so they happen
+ * chronologically.
+ */
+
+<span class="fc" id="L20">class TimelineSimulationListener implements SimulationListener {</span>
+
+	static final int NO_DAY = -1;
+	static final double NO_HOUR = Double.NaN;
+
+	static final int START_DAY = 1;
+	static final double START_HOUR = 0.0;
+
+<span class="fc" id="L28">	private final List&lt;TimelineListener&gt; timelineListeners = new ArrayList&lt;&gt;();</span>
+
+	@Override
+	public void simulationStarted(SimulationInfo simulationInfo) {
+<span class="fc" id="L32">		fireListeners(new TimelineEvent(this, Type.SIMULATION_STARTED, NO_DAY, NO_HOUR, simulationInfo));</span>
+<span class="fc" id="L33">	}</span>
+
+	@Override
+	public void sprintPlanned(SprintPlanning sprintPlanning) {
+<span class="fc" id="L37">		fireListeners(new TimelineEvent(this, Type.SPRINT_STARTED, START_DAY, START_HOUR, sprintPlanning));</span>
+<span class="fc" id="L38">	}</span>
+
+	@Override
+	public void sprintExecuted(SprintRetro sprintRetro) {
+<span class="fc" id="L42">		final TaskAndTime lastTaskAndTime = fireTimelineEvents(sprintRetro.getMembers(),</span>
+<span class="fc" id="L43">				sprintRetro.getSprint().getTasks());</span>
+<span class="fc" id="L44">		fireListeners(</span>
+				new TimelineEvent(this, Type.SPRINT_FINISHED, lastTaskAndTime.day, lastTaskAndTime.hour, sprintRetro));
+<span class="fc" id="L46">	}</span>
+
+	TaskAndTime fireTimelineEvents(Member[] members, Task[] tasks) {
+<span class="fc" id="L49">		final List&lt;Member&gt; membersAsList = Arrays.asList(members);</span>
+
+		@SuppressWarnings(&quot;unchecked&quot;)
+<span class="fc" id="L52">		final List&lt;TaskAndTime&gt;[] tasksByMember = new List[members.length];</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">		for (int i = 0; i &lt; members.length; i++) {</span>
+<span class="fc" id="L54">			tasksByMember[i] = new ArrayList&lt;&gt;();</span>
+		}
+
+		// sort the tasks by member and sum their times
+
+<span class="fc bfc" id="L59" title="All 2 branches covered.">		for (int taskIndex = 0; taskIndex &lt; tasks.length; taskIndex++) {</span>
+<span class="fc" id="L60">			final Task task = tasks[taskIndex];</span>
+
+<span class="fc" id="L62">			final Member member = (Member) task.getUserData(SprintExecutor.TASK_DATA_ASSIGNEE);</span>
+<span class="fc" id="L63">			final int membersIndex = membersAsList.indexOf(member);</span>
+
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">			if (membersIndex &lt; 0) throw new IllegalArgumentException(&quot;Could not find member &quot; + member);</span>
+
+<span class="fc" id="L67">			final int taskIndexByMember = tasksByMember[membersIndex].size();</span>
+
+			final TaskAndTime taskAndTime;
+<span class="fc bfc" id="L70" title="All 2 branches covered.">			if (taskIndexByMember == 0) {</span>
+				// first task of that member
+<span class="fc" id="L72">				taskAndTime = new TaskAndTime(task);</span>
+			} else {
+				// follow up task
+<span class="fc" id="L75">				taskAndTime = tasksByMember[membersIndex].get(taskIndexByMember - 1).createNext(task);</span>
+			}
+<span class="fc" id="L77">			tasksByMember[membersIndex].add(taskAndTime);</span>
+		}
+
+		// now add the last task of each member
+
+<span class="fc bfc" id="L82" title="All 2 branches covered.">		for (int i = 0; i &lt; tasksByMember.length; i++) {</span>
+<span class="fc" id="L83">			final TaskAndTime lastTaskAndTime = tasksByMember[i].stream().max(Comparator.naturalOrder()).get();</span>
+<span class="fc" id="L84">			final TaskAndTime finishedTaskAndTime = lastTaskAndTime.createNext(null);</span>
+<span class="fc" id="L85">			tasksByMember[i].add(finishedTaskAndTime);</span>
+		}
+
+		// sort the tasks by their time and fire events in correct order
+
+<span class="fc" id="L90">		Arrays.stream(tasksByMember).flatMap(List::stream).sorted().forEach(taskAndTime -&gt; {</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">			if (taskAndTime.previousTask != null) {</span>
+<span class="fc" id="L92">				fireListeners(new TimelineEvent(this, Type.TASK_FINISHED, taskAndTime.day, taskAndTime.hour,</span>
+						taskAndTime.previousTask));
+			}
+<span class="fc bfc" id="L95" title="All 2 branches covered.">			if (taskAndTime.task != null) {</span>
+<span class="fc" id="L96">				fireListeners(new TimelineEvent(this, Type.TASK_STARTED, taskAndTime.day, taskAndTime.hour,</span>
+						taskAndTime.task));
+			}
+<span class="fc" id="L99">		});</span>
+
+<span class="fc" id="L101">		return Arrays.stream(tasksByMember).flatMap(List::stream).max(Comparator.naturalOrder()).get();</span>
+	}
+
+	@Override
+	public void simulationFinished(SimulationResult simulationResult) {
+<span class="fc" id="L106">		fireListeners(new TimelineEvent(this, Type.SIMULATION_FINISHED, NO_DAY, NO_HOUR, simulationResult));</span>
+
+<span class="fc" id="L108">	}</span>
+
+	protected void fireListeners(TimelineEvent event) {
+		for (final TimelineListener timelineListener : this.timelineListeners
+<span class="fc bfc" id="L112" title="All 2 branches covered.">				.toArray(new TimelineListener[this.timelineListeners.size()])) {</span>
+<span class="fc" id="L113">			timelineListener.eventHappened(event);</span>
+		}
+<span class="fc" id="L115">	}</span>
+
+	public void addTimelineListener(TimelineListener timelineListener) {
+<span class="fc" id="L118">		this.timelineListeners.add(timelineListener);</span>
+<span class="fc" id="L119">	}</span>
+
+	public void removeTimelineListener(TimelineListener timelineListener) {
+<span class="fc" id="L122">		this.timelineListeners.remove(timelineListener);</span>
+<span class="fc" id="L123">	}</span>
+
+	/*
+	 *
+	 */
+
+	static class TaskAndTime implements Comparable&lt;TaskAndTime&gt; {
+
+		final Task task;
+		int day;
+		double hour;
+		Task previousTask;
+
+		public TaskAndTime(Task task) {
+<span class="fc" id="L137">			this(task, START_DAY, START_HOUR, null);</span>
+<span class="fc" id="L138">		}</span>
+
+<span class="fc" id="L140">		private TaskAndTime(Task task, int day, double hour, Task previousTask) {</span>
+<span class="fc" id="L141">			this.task = task;</span>
+<span class="fc" id="L142">			this.day = day;</span>
+<span class="fc" id="L143">			this.hour = hour;</span>
+<span class="fc" id="L144">			this.previousTask = previousTask;</span>
+<span class="fc" id="L145">		}</span>
+
+		public TaskAndTime createNext(Task nextTask) {
+<span class="fc" id="L148">			final Member member = (Member) this.task.getUserData(SprintExecutor.TASK_DATA_ASSIGNEE);</span>
+<span class="fc" id="L149">			final double taskTime = ((Double) this.task.getUserData(SprintExecutor.TASK_DATA_NECESSARY_HOURS))</span>
+<span class="fc" id="L150">					.doubleValue();</span>
+
+<span class="fc" id="L152">			int newDay = this.day;</span>
+<span class="fc" id="L153">			double newHour = this.hour + taskTime;</span>
+
+<span class="fc bfc" id="L155" title="All 2 branches covered.">			while (newHour &gt;= member.getWorkHoursPerDay()) {</span>
+<span class="fc" id="L156">				newHour -= member.getWorkHoursPerDay();</span>
+<span class="fc" id="L157">				newDay++;</span>
+			}
+<span class="fc" id="L159">			return new TaskAndTime(nextTask, newDay, newHour, this.task);</span>
+		}
+
+		@Override
+		public int compareTo(TaskAndTime that) {
+<span class="fc" id="L164">			final int compare = Integer.compare(this.day, that.day);</span>
+<span class="fc bfc" id="L165" title="All 2 branches covered.">			if (compare != 0) return compare;</span>
+<span class="fc" id="L166">			return Double.compare(this.hour, that.hour);</span>
+		}
+
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

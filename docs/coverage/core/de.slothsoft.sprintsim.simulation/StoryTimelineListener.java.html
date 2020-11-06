@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>StoryTimelineListener.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Charts Coverage</a> &gt; <a href="../index.html" class="el_bundle">core</a> &gt; <a href="index.source.html" class="el_package">de.slothsoft.sprintsim.simulation</a> &gt; <span class="el_source">StoryTimelineListener.java</span></div><h1>StoryTimelineListener.java</h1><pre class="source lang-java linenums">package de.slothsoft.sprintsim.simulation;
+
+import java.text.MessageFormat;
+import java.text.NumberFormat;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Objects;
+
+import de.slothsoft.sprintsim.Member;
+import de.slothsoft.sprintsim.Task;
+import de.slothsoft.sprintsim.execution.SprintExecutor;
+import de.slothsoft.sprintsim.generation.SprintGenerator;
+import de.slothsoft.sprintsim.generation.SprintPlanning;
+import de.slothsoft.sprintsim.io.ComponentWriter;
+import de.slothsoft.sprintsim.io.TextComponentWriter;
+
+<span class="fc" id="L17">public class StoryTimelineListener implements TimelineListener {</span>
+
+	private static final int FIRST_TASK = 31415;
+	/** A &lt;code&gt;String&lt;/code&gt; for easier story telling. */
+	private static final String TASK_DATA_NAME = &quot;name&quot;; //$NON-NLS-1$
+
+<span class="fc" id="L23">	private ComponentWriter componentWriter = new TextComponentWriter(System.out::println);</span>
+<span class="fc" id="L24">	private String taskIdPrefix = &quot;LIO&quot;; //$NON-NLS-1$</span>
+	private int waitMillisPerHour;
+
+<span class="fc" id="L27">	private final NumberFormat numberFormat = NumberFormat.getInstance(Locale.ENGLISH);</span>
+
+	private int sprintNumber;
+	private int taskCount;
+<span class="fc" id="L31">	private int longestDayInHours = 8;</span>
+
+<span class="fc" id="L33">	private int lastDay = -1;</span>
+<span class="fc" id="L34">	private double lastHour = -1;</span>
+
+	@Override
+	public void eventHappened(TimelineEvent event) {
+<span class="fc" id="L38">		waitBeforeLoggingIfNecessary(event.day, event.hour);</span>
+
+<span class="pc bpc" id="L40" title="1 of 7 branches missed.">		switch (event.type) {</span>
+			case SIMULATION_STARTED :
+<span class="fc" id="L42">				logSimulationStarted(event);</span>
+<span class="fc" id="L43">				break;</span>
+			case SPRINT_STARTED :
+<span class="fc" id="L45">				logSprintStarted(event);</span>
+<span class="fc" id="L46">				break;</span>
+			case TASK_STARTED :
+<span class="fc" id="L48">				logTaskStarted(event);</span>
+<span class="fc" id="L49">				break;</span>
+			case TASK_FINISHED :
+<span class="fc" id="L51">				logTaskFinished(event);</span>
+<span class="fc" id="L52">				break;</span>
+			case SPRINT_FINISHED :
+<span class="fc" id="L54">				logSprintFinished(event);</span>
+<span class="fc" id="L55">				break;</span>
+			case SIMULATION_FINISHED :
+<span class="fc" id="L57">				logSimulationFinished(event);</span>
+<span class="fc" id="L58">				break;</span>
+			default :
+				break;
+		}
+
+<span class="fc" id="L63">	}</span>
+
+	private void waitBeforeLoggingIfNecessary(int currentDay, double currentHour) {
+<span class="pc bpc" id="L66" title="1 of 4 branches missed.">		if (this.waitMillisPerHour &gt;= 0 &amp;&amp; this.lastDay &gt;= TimelineSimulationListener.START_DAY) {</span>
+<span class="fc" id="L67">			waitBeforeLogging(currentDay, currentHour);</span>
+		}
+<span class="fc" id="L69">		this.lastDay = currentDay;</span>
+<span class="fc" id="L70">		this.lastHour = currentHour;</span>
+<span class="fc" id="L71">	}</span>
+
+	private void waitBeforeLogging(int currentDay, double currentHour) {
+<span class="fc" id="L74">		final double differenceInHours = calculateDifference(this.lastDay, this.lastHour, currentDay, currentHour,</span>
+				this.longestDayInHours);
+
+		try {
+<span class="fc" id="L78">			Thread.sleep((long) (differenceInHours * this.waitMillisPerHour));</span>
+<span class="nc" id="L79">		} catch (final InterruptedException e) {</span>
+			// ignore
+<span class="fc" id="L81">		}</span>
+<span class="fc" id="L82">	}</span>
+
+	static double calculateDifference(int day1, double hour1, int day2, double hour2, int longestDayInHours) {
+<span class="fc" id="L85">		final int diffInDays = day2 - day1;</span>
+<span class="fc" id="L86">		final double diffInHours = hour2 - hour1;</span>
+<span class="fc" id="L87">		return Math.abs(diffInDays * longestDayInHours + diffInHours);</span>
+	}
+
+	private void logSimulationStarted(TimelineEvent event) {
+<span class="fc" id="L91">		final SimulationInfo simulationInfo = (SimulationInfo) event.data;</span>
+
+		// prepare data
+
+<span class="fc" id="L95">		final Member[] members = simulationInfo.getMembers();</span>
+<span class="fc" id="L96">		this.sprintNumber = 0;</span>
+<span class="fc" id="L97">		this.taskCount = 0;</span>
+<span class="fc" id="L98">		this.longestDayInHours = Arrays.stream(members).mapToInt(Member::getWorkHoursPerDay).max().getAsInt();</span>
+<span class="fc" id="L99">		LoggingSimulationListener.appendMemberNames(members);</span>
+
+		// log
+
+<span class="fc" id="L103">		this.componentWriter.writeTitle(Messages.getString(&quot;TeamMembersTitle&quot;)); //$NON-NLS-1$</span>
+
+<span class="fc bfc" id="L105" title="All 2 branches covered.">		for (final Member member : members) {</span>
+<span class="fc" id="L106">			this.componentWriter.writeLine(MessageFormat.format(Messages.getString(&quot;TeamMemberPattern&quot;), //$NON-NLS-1$</span>
+<span class="fc" id="L107">					member.getUserData(LoggingSimulationListener.MEMBER_DATA_NAME), member.getWorkPerformance(),</span>
+<span class="fc" id="L108">					String.valueOf(member.getWorkHoursPerDay())));</span>
+		}
+<span class="fc" id="L110">		this.componentWriter.writeEmpty();</span>
+<span class="fc" id="L111">	}</span>
+
+	private void logSprintStarted(TimelineEvent event) {
+<span class="fc" id="L114">		final SprintPlanning sprintPlanning = (SprintPlanning) event.data;</span>
+
+		// prepare data
+
+<span class="fc" id="L118">		appendTaskNames(sprintPlanning.getSprint().getTasks());</span>
+<span class="fc" id="L119">		this.sprintNumber++;</span>
+
+		// log
+
+<span class="fc" id="L123">		this.componentWriter.writeTitle(</span>
+<span class="fc" id="L124">				MessageFormat.format(Messages.getString(&quot;SprintStartPattern&quot;), String.valueOf(this.sprintNumber)));</span>
+<span class="fc" id="L125">	}</span>
+
+	private void appendTaskNames(Task[] tasks) {
+<span class="fc bfc" id="L128" title="All 2 branches covered.">		for (int i = 0; i &lt; tasks.length; i++) {</span>
+<span class="fc" id="L129">			tasks[i].addUserData(TASK_DATA_NAME, createTaskName(this.taskCount + i));</span>
+		}
+<span class="fc" id="L131">		this.taskCount += tasks.length;</span>
+<span class="fc" id="L132">	}</span>
+
+	String createTaskName(int index) {
+<span class="fc" id="L135">		return this.taskIdPrefix + '-' + String.valueOf(FIRST_TASK + index);</span>
+	}
+
+	private void logTaskStarted(TimelineEvent event) {
+<span class="fc" id="L139">		final Task task = (Task) event.data;</span>
+
+		// prepare data
+
+<span class="fc" id="L143">		final Member member = (Member) task.getUserData(SprintExecutor.TASK_DATA_ASSIGNEE);</span>
+<span class="fc" id="L144">		final int memberIndex = ((Integer) task.getUserData(SprintExecutor.TASK_DATA_ASSIGNEE_INDEX)).intValue();</span>
+<span class="fc" id="L145">		final double memberEstimation = ((double[]) task</span>
+<span class="fc" id="L146">				.getUserData(SprintGenerator.TASK_DATA_MEMBER_ESTIMATIONS))[memberIndex];</span>
+<span class="fc" id="L147">		final double teamEstimation = ((Double) task.getUserData(SprintGenerator.TASK_DATA_COLLECTED_ESTIMATION))</span>
+<span class="fc" id="L148">				.doubleValue();</span>
+
+		// log
+
+<span class="fc" id="L152">		this.componentWriter.writeLine(MessageFormat.format(Messages.getString(&quot;TaskStartedPattern&quot;), //$NON-NLS-1$</span>
+<span class="fc" id="L153">				member.getUserData(LoggingSimulationListener.MEMBER_DATA_NAME), task.getUserData(TASK_DATA_NAME),</span>
+<span class="fc" id="L154">				this.numberFormat.format(memberEstimation), this.numberFormat.format(teamEstimation),</span>
+<span class="fc" id="L155">				stringify(event.day, event.hour)));</span>
+<span class="fc" id="L156">	}</span>
+
+	private void logTaskFinished(TimelineEvent event) {
+<span class="fc" id="L159">		final Task task = (Task) event.data;</span>
+
+		// prepare data
+
+<span class="fc" id="L163">		final Member member = (Member) task.getUserData(SprintExecutor.TASK_DATA_ASSIGNEE);</span>
+<span class="fc" id="L164">		final double necessaryHours = ((Double) task.getUserData(SprintExecutor.TASK_DATA_NECESSARY_HOURS))</span>
+<span class="fc" id="L165">				.doubleValue();</span>
+
+		// log
+
+<span class="fc" id="L169">		this.componentWriter.writeLine(MessageFormat.format(Messages.getString(&quot;TaskFinishedPattern&quot;), //$NON-NLS-1$</span>
+<span class="fc" id="L170">				member.getUserData(LoggingSimulationListener.MEMBER_DATA_NAME), task.getUserData(TASK_DATA_NAME),</span>
+<span class="fc" id="L171">				this.numberFormat.format(necessaryHours), stringify(event.day, event.hour)));</span>
+<span class="fc" id="L172">	}</span>
+
+	static String stringify(int day, double hour) {
+<span class="fc" id="L175">		final int intHours = (int) hour;</span>
+<span class="fc" id="L176">		final String zero = &quot;%02d&quot;;</span>
+<span class="fc" id="L177">		final int minutes = (int) (Math.round((hour - intHours) * 60));</span>
+<span class="fc" id="L178">		final String hoursString = String.format(zero, Integer.valueOf(intHours)) + ':'</span>
+<span class="fc" id="L179">				+ String.format(zero, Integer.valueOf(minutes));</span>
+<span class="fc" id="L180">		return MessageFormat.format(Messages.getString(&quot;DayHourPattern&quot;), //$NON-NLS-1$</span>
+<span class="fc" id="L181">				String.valueOf(day), hoursString);</span>
+	}
+
+	@SuppressWarnings(&quot;unused&quot;)
+	private void logSprintFinished(TimelineEvent event) {
+<span class="fc" id="L186">		this.componentWriter.writeEmpty();</span>
+<span class="fc" id="L187">	}</span>
+
+	@SuppressWarnings(&quot;unused&quot;)
+	private void logSimulationFinished(TimelineEvent event) {
+		// nothing to do yet
+<span class="fc" id="L192">	}</span>
+
+	public ComponentWriter getComponentWriter() {
+<span class="nc" id="L195">		return this.componentWriter;</span>
+	}
+
+	public StoryTimelineListener componentWriter(ComponentWriter newComponentWriter) {
+<span class="fc" id="L199">		setComponentWriter(newComponentWriter);</span>
+<span class="fc" id="L200">		return this;</span>
+	}
+
+	public void setComponentWriter(ComponentWriter componentWriter) {
+<span class="fc" id="L204">		this.componentWriter = Objects.requireNonNull(componentWriter);</span>
+<span class="fc" id="L205">	}</span>
+
+	public int getWaitMillisPerHour() {
+<span class="nc" id="L208">		return this.waitMillisPerHour;</span>
+	}
+
+	public StoryTimelineListener waitMillisPerHour(int newWaitMillisPerHour) {
+<span class="nc" id="L212">		setWaitMillisPerHour(newWaitMillisPerHour);</span>
+<span class="nc" id="L213">		return this;</span>
+	}
+
+	public void setWaitMillisPerHour(int waitMillisPerHour) {
+<span class="nc" id="L217">		this.waitMillisPerHour = waitMillisPerHour;</span>
+<span class="nc" id="L218">	}</span>
+
+	public String getTaskIdPrefix() {
+<span class="nc" id="L221">		return this.taskIdPrefix;</span>
+	}
+
+	public StoryTimelineListener taskIdPrefix(String newTaskIdPrefix) {
+<span class="nc" id="L225">		setTaskIdPrefix(newTaskIdPrefix);</span>
+<span class="nc" id="L226">		return this;</span>
+	}
+
+	public void setTaskIdPrefix(String taskIdPrefix) {
+<span class="nc" id="L230">		this.taskIdPrefix = Objects.requireNonNull(taskIdPrefix);</span>
+<span class="nc" id="L231">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

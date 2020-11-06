@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Simulation.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Charts Coverage</a> &gt; <a href="../index.html" class="el_bundle">core</a> &gt; <a href="index.source.html" class="el_package">de.slothsoft.sprintsim.simulation</a> &gt; <span class="el_source">Simulation.java</span></div><h1>Simulation.java</h1><pre class="source lang-java linenums">package de.slothsoft.sprintsim.simulation;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Simulation.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Charts Coverage</a> &gt; <a href="../index.html" class="el_bundle">core</a> &gt; <a href="index.source.html" class="el_package">de.slothsoft.sprintsim.simulation</a> &gt; <span class="el_source">Simulation.java</span></div><h1>Simulation.java</h1><pre class="source lang-java linenums">package de.slothsoft.sprintsim.simulation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,26 +21,26 @@ public class Simulation {
 	private Long seed;
 
 <span class="fc" id="L23">	private final List&lt;SimulationListener&gt; simulationListeners = new ArrayList&lt;&gt;();</span>
+	private TimelineSimulationListener timelineSimulationListener;
 
-<span class="fc" id="L25">	public Simulation(Member... members) {</span>
-<span class="fc" id="L26">		this.members = Objects.requireNonNull(members);</span>
-<span class="fc" id="L27">	}</span>
+<span class="fc" id="L26">	public Simulation(Member... members) {</span>
+<span class="fc" id="L27">		this.members = Objects.requireNonNull(members);</span>
+<span class="fc" id="L28">	}</span>
 
 	public SimulationResult runSprint() {
-<span class="fc" id="L30">		return runMilestone(1);</span>
+<span class="fc" id="L31">		return runMilestone(1);</span>
 	}
 
-	
 	public SimulationResult runMilestone(int numberOfSprints) {
-<span class="fc" id="L35">		final SimulationInfo info = new SimulationInfo(this.members, this.taskConfig, this.sprintConfig, numberOfSprints);</span>
+<span class="fc" id="L35">		final SimulationInfo info = createInfo(numberOfSprints);</span>
 <span class="fc" id="L36">		fireListeners(listener -&gt; listener.simulationStarted(info));</span>
 
 <span class="fc" id="L38">		final SprintGenerator generator = createGenerator();</span>
 <span class="fc" id="L39">		final SprintExecutor executor = createExecutor();</span>
 
-<span class="fc" id="L41">		SprintPlanning[] sprintPlannings = new SprintPlanning[numberOfSprints];</span>
-<span class="fc" id="L42">		SprintRetro[] sprintRetros = new SprintRetro[numberOfSprints];</span>
-		
+<span class="fc" id="L41">		final SprintPlanning[] sprintPlannings = new SprintPlanning[numberOfSprints];</span>
+<span class="fc" id="L42">		final SprintRetro[] sprintRetros = new SprintRetro[numberOfSprints];</span>
+
 <span class="fc bfc" id="L44" title="All 2 branches covered.">		for (int sprintNumber = 0; sprintNumber &lt; numberOfSprints; sprintNumber++) {</span>
 <span class="fc" id="L45">			final SprintPlanning sprintPlanning = generator.generate();</span>
 <span class="fc" id="L46">			fireListeners(listener -&gt; listener.sprintPlanned(sprintPlanning));</span>
@@ -53,85 +53,104 @@ public class Simulation {
 
 <span class="fc" id="L54">		final SimulationResult result = new SimulationResult(sprintPlannings, sprintRetros);</span>
 <span class="fc" id="L55">		fireListeners(listener -&gt; listener.simulationFinished(result));</span>
-<span class="fc" id="L56">		return result; </span>
+<span class="fc" id="L56">		return result;</span>
 	}
-	
+
+	SimulationInfo createInfo(int numberOfSprints) {
+<span class="fc" id="L60">		return new SimulationInfo(this.members, this.taskConfig, this.sprintConfig, numberOfSprints);</span>
+	}
+
 	SprintGenerator createGenerator() {
-<span class="fc" id="L60">		return new SprintGenerator(this.members).taskConfig(this.taskConfig).sprintConfig(this.sprintConfig).seed(this.seed);</span>
+<span class="fc" id="L64">		return new SprintGenerator(this.members).taskConfig(this.taskConfig).sprintConfig(this.sprintConfig)</span>
+<span class="fc" id="L65">				.seed(this.seed);</span>
 	}
 
 	SprintExecutor createExecutor() {
-<span class="fc" id="L64">		return new SprintExecutor(this.members).taskConfig(this.taskConfig);</span>
+<span class="fc" id="L69">		return new SprintExecutor(this.members).taskConfig(this.taskConfig);</span>
 	}
 
 	protected void fireListeners(Consumer&lt;SimulationListener&gt; listenerAction) {
 		for (final SimulationListener simulationListener : this.simulationListeners
-<span class="fc bfc" id="L69" title="All 2 branches covered.">				.toArray(new SimulationListener[this.simulationListeners.size()])) {</span>
-<span class="fc" id="L70">			listenerAction.accept(simulationListener);</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">				.toArray(new SimulationListener[this.simulationListeners.size()])) {</span>
+<span class="fc" id="L75">			listenerAction.accept(simulationListener);</span>
 		}
-<span class="fc" id="L72">	}</span>
+<span class="fc" id="L77">	}</span>
 
 	public void addSimulationListener(SimulationListener simulationListener) {
-<span class="fc" id="L75">		this.simulationListeners.add(simulationListener);</span>
-<span class="fc" id="L76">	}</span>
+<span class="fc" id="L80">		this.simulationListeners.add(simulationListener);</span>
+<span class="fc" id="L81">	}</span>
 
 	public void removeSimulationListener(SimulationListener simulationListener) {
-<span class="fc" id="L79">		this.simulationListeners.remove(simulationListener);</span>
-<span class="fc" id="L80">	}</span>
+<span class="fc" id="L84">		this.simulationListeners.remove(simulationListener);</span>
+<span class="fc" id="L85">	}</span>
+
+	public void addTimelineListener(TimelineListener simulationListener) {
+<span class="fc" id="L88">		getSafeTimelineSimulationListener().addTimelineListener(simulationListener);</span>
+<span class="fc" id="L89">	}</span>
+
+	public void removeTimelineListener(TimelineListener simulationListener) {
+<span class="fc" id="L92">		getSafeTimelineSimulationListener().removeTimelineListener(simulationListener);</span>
+<span class="fc" id="L93">	}</span>
+
+	TimelineSimulationListener getSafeTimelineSimulationListener() {
+<span class="fc bfc" id="L96" title="All 2 branches covered.">		if (this.timelineSimulationListener == null) {</span>
+<span class="fc" id="L97">			this.timelineSimulationListener = new TimelineSimulationListener();</span>
+<span class="fc" id="L98">			this.simulationListeners.add(this.timelineSimulationListener);</span>
+		}
+<span class="fc" id="L100">		return this.timelineSimulationListener;</span>
+	}
 
 	public TaskConfig getTaskConfig() {
-<span class="fc" id="L83">		return this.taskConfig;</span>
+<span class="fc" id="L104">		return this.taskConfig;</span>
 	}
 
 	public Simulation taskConfig(TaskConfig newTaskConfig) {
-<span class="nc" id="L87">		setTaskConfig(newTaskConfig);</span>
-<span class="nc" id="L88">		return this;</span>
+<span class="nc" id="L108">		setTaskConfig(newTaskConfig);</span>
+<span class="nc" id="L109">		return this;</span>
 	}
 
 	public void setTaskConfig(TaskConfig taskConfig) {
-<span class="nc" id="L92">		this.taskConfig = Objects.requireNonNull(taskConfig);</span>
-<span class="nc" id="L93">	}</span>
+<span class="nc" id="L113">		this.taskConfig = Objects.requireNonNull(taskConfig);</span>
+<span class="nc" id="L114">	}</span>
 
 	public Member[] getMembers() {
-<span class="fc" id="L96">		return this.members;</span>
+<span class="fc" id="L117">		return this.members;</span>
 	}
 
 	public Simulation members(Member... newMembers) {
-<span class="nc" id="L100">		setMembers(newMembers);</span>
-<span class="nc" id="L101">		return this;</span>
+<span class="nc" id="L121">		setMembers(newMembers);</span>
+<span class="nc" id="L122">		return this;</span>
 	}
 
 	public void setMembers(Member... members) {
-<span class="fc" id="L105">		this.members = Objects.requireNonNull(members);</span>
-<span class="fc" id="L106">	}</span>
+<span class="fc" id="L126">		this.members = Objects.requireNonNull(members);</span>
+<span class="fc" id="L127">	}</span>
 
 	public SprintConfig getSprintConfig() {
-<span class="fc" id="L109">		return this.sprintConfig;</span>
+<span class="fc" id="L130">		return this.sprintConfig;</span>
 	}
 
 	public Simulation sprintConfig(SprintConfig newSprintConfig) {
-<span class="nc" id="L113">		setSprintConfig(newSprintConfig);</span>
-<span class="nc" id="L114">		return this;</span>
+<span class="nc" id="L134">		setSprintConfig(newSprintConfig);</span>
+<span class="nc" id="L135">		return this;</span>
 	}
 
 	public void setSprintConfig(SprintConfig sprintConfig) {
-<span class="nc" id="L118">		this.sprintConfig = Objects.requireNonNull(sprintConfig);</span>
-<span class="nc" id="L119">	}</span>
+<span class="nc" id="L139">		this.sprintConfig = Objects.requireNonNull(sprintConfig);</span>
+<span class="nc" id="L140">	}</span>
 
 	public Long getSeed() {
-<span class="nc" id="L122">		return seed;</span>
+<span class="nc" id="L143">		return this.seed;</span>
 	}
 
 	public Simulation seed(Long newSeed) {
-<span class="fc" id="L126">		setSeed(newSeed);</span>
-<span class="fc" id="L127">		return this;</span>
+<span class="fc" id="L147">		setSeed(newSeed);</span>
+<span class="fc" id="L148">		return this;</span>
 	}
-	
 
 	public void setSeed(Long seed) {
-<span class="fc" id="L132">		this.seed = seed;</span>
-<span class="fc" id="L133">	}</span>
+<span class="fc" id="L152">		this.seed = seed;</span>
+<span class="fc" id="L153">	}</span>
 
-	
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

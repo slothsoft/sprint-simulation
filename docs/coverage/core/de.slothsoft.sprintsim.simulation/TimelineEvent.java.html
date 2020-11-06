@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>TimelineEvent.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Charts Coverage</a> &gt; <a href="../index.html" class="el_bundle">core</a> &gt; <a href="index.source.html" class="el_package">de.slothsoft.sprintsim.simulation</a> &gt; <span class="el_source">TimelineEvent.java</span></div><h1>TimelineEvent.java</h1><pre class="source lang-java linenums">package de.slothsoft.sprintsim.simulation;
+
+import java.util.EventObject;
+
+import de.slothsoft.sprintsim.Task;
+import de.slothsoft.sprintsim.execution.SprintRetro;
+import de.slothsoft.sprintsim.generation.SprintPlanning;
+
+public class TimelineEvent extends EventObject {
+
+	private static final long serialVersionUID = -634659250042100866L;
+
+<span class="fc" id="L13">	public enum Type {</span>
+
+		/** Data is {@link SimulationInfo}. */
+
+<span class="fc" id="L17">		SIMULATION_STARTED,</span>
+
+		/** Data is {@link SprintPlanning}. */
+
+<span class="fc" id="L21">		SPRINT_STARTED,</span>
+
+		/** Data is {@link Task}. */
+
+<span class="fc" id="L25">		TASK_STARTED,</span>
+
+		/** Data is {@link Task}. */
+
+<span class="fc" id="L29">		TASK_FINISHED,</span>
+
+		/** Data is {@link SprintRetro}. */
+
+<span class="fc" id="L33">		SPRINT_FINISHED,</span>
+
+		/** Data is {@link SimulationResult}. */
+
+<span class="fc" id="L37">		SIMULATION_FINISHED;</span>
+	}
+
+	final Type type;
+	final int day;
+	final double hour;
+	final Object data;
+
+	TimelineEvent(Object source, Type type, int day, double hour, Object data) {
+<span class="fc" id="L46">		super(source);</span>
+<span class="fc" id="L47">		this.type = type;</span>
+<span class="fc" id="L48">		this.day = day;</span>
+<span class="fc" id="L49">		this.hour = hour;</span>
+<span class="fc" id="L50">		this.data = data;</span>
+<span class="fc" id="L51">	}</span>
+
+	public Type getType() {
+<span class="fc" id="L54">		return this.type;</span>
+	}
+
+	/**
+	 * Days start at 1.
+	 */
+
+	public int getDay() {
+<span class="fc" id="L62">		return this.day;</span>
+	}
+
+	/**
+	 * Hours start at 0.
+	 */
+
+	public double getHour() {
+<span class="fc" id="L70">		return this.hour;</span>
+	}
+
+	public Object getData() {
+<span class="fc" id="L74">		return this.data;</span>
+	}
+
+	@Override
+	public String toString() {
+<span class="fc" id="L79">		return &quot;TimelineEvent [type=&quot; + this.type + &quot;, day=&quot; + this.day + &quot;, hour=&quot; + this.hour + &quot;]&quot;;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

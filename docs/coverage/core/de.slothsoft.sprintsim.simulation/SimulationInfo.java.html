@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SimulationInfo.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Charts Coverage</a> &gt; <a href="../index.html" class="el_bundle">core</a> &gt; <a href="index.source.html" class="el_package">de.slothsoft.sprintsim.simulation</a> &gt; <span class="el_source">SimulationInfo.java</span></div><h1>SimulationInfo.java</h1><pre class="source lang-java linenums">package de.slothsoft.sprintsim.simulation;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SimulationInfo.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Charts Coverage</a> &gt; <a href="../index.html" class="el_bundle">core</a> &gt; <a href="index.source.html" class="el_package">de.slothsoft.sprintsim.simulation</a> &gt; <span class="el_source">SimulationInfo.java</span></div><h1>SimulationInfo.java</h1><pre class="source lang-java linenums">package de.slothsoft.sprintsim.simulation;
+
+import java.util.Arrays;
+import java.util.Objects;
 
 import de.slothsoft.sprintsim.Member;
 import de.slothsoft.sprintsim.config.SprintConfig;
@@ -11,27 +14,52 @@ public class SimulationInfo {
 	private final SprintConfig sprintConfig;
 	private final int numberOfSprints;
 
-<span class="fc" id="L14">	public SimulationInfo(Member[] members, TaskConfig taskConfig, SprintConfig sprintConfig, int numberOfSprints) {</span>
-<span class="fc" id="L15">		this.members = members;</span>
-<span class="fc" id="L16">		this.taskConfig = taskConfig;</span>
-<span class="fc" id="L17">		this.sprintConfig = sprintConfig;</span>
-<span class="fc" id="L18">		this.numberOfSprints = numberOfSprints;</span>
-<span class="fc" id="L19">	}</span>
+<span class="fc" id="L17">	public SimulationInfo(Member[] members, TaskConfig taskConfig, SprintConfig sprintConfig, int numberOfSprints) {</span>
+<span class="fc" id="L18">		this.members = members;</span>
+<span class="fc" id="L19">		this.taskConfig = taskConfig;</span>
+<span class="fc" id="L20">		this.sprintConfig = sprintConfig;</span>
+<span class="fc" id="L21">		this.numberOfSprints = numberOfSprints;</span>
+<span class="fc" id="L22">	}</span>
 
 	public Member[] getMembers() {
-<span class="fc" id="L22">		return this.members;</span>
+<span class="fc" id="L25">		return this.members;</span>
 	}
 
 	public TaskConfig getTaskConfig() {
-<span class="fc" id="L26">		return this.taskConfig;</span>
+<span class="fc" id="L29">		return this.taskConfig;</span>
 	}
 
 	public SprintConfig getSprintConfig() {
-<span class="fc" id="L30">		return this.sprintConfig;</span>
+<span class="fc" id="L33">		return this.sprintConfig;</span>
 	}
 
 	public int getNumberOfSprints() {
-<span class="fc" id="L34">		return this.numberOfSprints;</span>
+<span class="fc" id="L37">		return this.numberOfSprints;</span>
+	}
+
+	@Override
+	public int hashCode() {
+<span class="nc" id="L42">		return Objects.hash(this.members, Integer.valueOf(this.numberOfSprints), this.sprintConfig, this.taskConfig);</span>
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+<span class="pc bpc" id="L47" title="1 of 2 branches missed.">		if (this == obj) return true;</span>
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">		if (obj == null) return false;</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">		if (getClass() != obj.getClass()) return false;</span>
+
+<span class="fc" id="L51">		final SimulationInfo other = (SimulationInfo) obj;</span>
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">		if (!Arrays.equals(this.members, other.members)) return false;</span>
+<span class="pc bpc" id="L53" title="1 of 2 branches missed.">		if (this.numberOfSprints != other.numberOfSprints) return false;</span>
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">		if (!Objects.equals(this.sprintConfig, other.sprintConfig)) return false;</span>
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">		if (!Objects.equals(this.taskConfig, other.taskConfig)) return false;</span>
+<span class="fc" id="L56">		return true;</span>
+	}
+
+	@Override
+	public String toString() {
+<span class="nc" id="L61">		return &quot;SimulationInfo [members=&quot; + Arrays.toString(this.members) + &quot;, taskConfig=&quot; + this.taskConfig</span>
+				+ &quot;, sprintConfig=&quot; + this.sprintConfig + &quot;, numberOfSprints=&quot; + this.numberOfSprints + &quot;]&quot;;
 	}
 
 }
