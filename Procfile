@@ -1,1 +1,1 @@
-web: java -jar webapp-runner.jar app/target/app-0.0.1-SNAPSHOT.war
+web: java -jar app/target/dependency/webapp-runner.jar app/target/*.war
