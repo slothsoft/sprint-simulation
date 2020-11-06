@@ -4,11 +4,12 @@
 
 - **Author:** [Stef Schulz](mailto:s.schulz@slothsoft.de)
 - **Repository:** <https://github.com/slothsoft/sprint-simulation>
+- **Web App:** <https://sprint-simulation.herokuapp.com/>
 - **Developer Resources:** [Executed Tests](http://slothsoft.github.io/sprint-simulation/tests/), [Code Coverage](http://slothsoft.github.io/sprint-simulation/coverage)
 
 This project was born to simulate sprint planning and execution, and figure out if you can estimate tasks as a group. 
 
-It's also used to get to know [Vaadin](https://vaadin.com/)
+It's also used to get to know [Vaadin](https://vaadin.com/) and [Heroku](https://dashboard.heroku.com).
 
 
 **Content:**
@@ -19,6 +20,7 @@ It's also used to get to know [Vaadin](https://vaadin.com/)
     - [Execution](#execution) 
 - [Results](#results)
 - [Real Life](#real-life)
+    - [What changes the sprint execution?](#what-changes-the-sprint-execution)
 - [Conclusion](#conclusion)
 - [Developer Guide](#developer-guide)
 - [Links](#links)
@@ -77,8 +79,8 @@ This project makes some assumptions:
 
 1. The team **`Member`s** get together
 2. A **`Task`s** is created from the never-ending task machine (see [TaskCreator](core/src/main/java/de/slothsoft/sprintsim/config/TaskCreator.java))
-3. Each team member estimates how long it will take to do the task (for *them*) - for that they take the time it *will* take them to do the task, and use a Gaussian curve capped at their `estimationDeviation` to add a bit of variance; on average this means they will estimate correctly
-4. An operation is used to get the team's estimation from the member's (average right now)
+3. Each team member estimates how long it will take to do the task (for *them*) - for that they take the time it *will* take them to do the task, and use a Gaussian curve capped at their `estimationDeviation` to add a bit of variance
+4. An operation is used to get the team's estimation from the member's ("average" right now)
 5. If there is still hours left in the **`Sprint`**, start again at 2.
 
 
@@ -164,10 +166,10 @@ Let's take a look at our team members first:
 
 The interesting tasks are:
 
-- **LIO-31417** - the estimate is 8 hours, but Charles needs 16 hours to do it (and for this task in particular he was a horrible guesser) → 8 hours ➕
-- **LIO-31418** - both Bert and Charles try to increase the estimation, but Angie only needs 11 hours → 10 hours ➖
-- **LIO-31420** - Charles increases the estimate by a lot, but Bert only needs 16 hours → 8 hours ➖
-- **LIO-31421** - Charles needs his time with the issue → 9 hours ➕
+- **LIO-31417** - the estimate is 8 hours, but Charles needs 16 hours to do it (and for this task in particular he was a horrible guesser) → 8 hours **more** are needed
+- **LIO-31418** - both Bert and Charles try to increase the estimation, but Angie only needs 11 hours → 10 hours **less** are needed
+- **LIO-31420** - Charles increases the estimate by a lot, but Bert only needs 16 hours → 8 hours **less** are needed
+- **LIO-31421** - Charles needs his time with the issue → 9 hours **more** are needed
 - ...
 
 In summary: every time Charles does a task, he needs a lot more time than estimated, Bert's time is a bit better than the estimate and Angie needs a lot less time than estimated. But since Angie can do a lot more tasks than Charles her faster times sum up.
@@ -254,15 +256,15 @@ This might be because this particular team doesn't know much about scrum, but I'
 
 I have honestly no practical idea besides pre-assigning tasks. 
 
-It should be clear to forbid questions towards the time estimations, even if the estimation is off by a lot. But this would work in the case were one or many team members did not understand the task correctly and questions should have been asked.
+A straight-forward way would be to forbid questions towards the time estimations, even if the estimation is off by a lot. But this would work against the case were one or many team members did not understand the task correctly and questions should have been asked.
 
-Since the entire estimation only works if individual members estimate well, this should be trained. For this you would need to make team members find their original estimation and see how much off they were eventually. For this purpose they should ignore the team estimate. Which of course makes monitoring the tasks hard.
+Since the entire estimation only works if each team member estimates well, this should be trained. For this you would need to make team members find their original estimation and see how much off they were eventually. For this purpose they should ignore the team estimate. Which of course makes monitoring the tasks hard.
 
-But honestly: *I* estimated I need 10 hours for a task, 4 team members estimated 30min each - which is an average of 2h 30min. Why do I have to beg for the remaining 7h if I never agreed to do it in that time? But that is what is happening again and again. And the team members wouldn't be able to do this in 30min either - they just don't care because they know they won't be doing that task.
+But honestly: *I* estimated I need 10 hours for a task, 4 team members estimated 30min each - which is an average of 2h 30min. Why do I have to beg for the remaining 7h if I never agreed to do it in that time? But that is what is happening again and again. And the team members wouldn't be able to do this in 30min either - they just don't care because they know they won't be doing that task. (Yes, this is an actual example that happened like this multiple times.)
 
 Which is, in short, the entire reason why team estimations do not work.
 
-There is one solution that works, but that is not really practical: use teams were everybody has a similar performance. That way estimations that stay just close to the group won't cost the team too much time.
+There is one solution that works, but it is not really practical: use teams were everybody has a similar performance. That way junior estimations that just stay close to the group won't cost the team too much time.
 
 
 
@@ -276,19 +278,78 @@ This is just a simulation, and humans don't act like computer programs. So in re
 - another thing that changes the "needed time" is the "estimated time" - if a team member is a lot faster than estimated, they might use the remaining time to do something else that is related; if they are a lot slower they might be able to rush things or "outsource" parts of the task into other tasks
 
 
+## What changes the sprint execution?
+
+With this project we can test objective factors that change how the sprint gets executed.
+
+Clearly these factors are important:
+
+- estimation performance of team members (`Member#estimationDeviation`)
+- the time team members can invest in the sprint  (`Member#workHoursPerDay`)
+
+But there are other factors.
+
+
+### Order of the Tasks
+
+Let's assume we have two team members (Angie and Bert) who are able to work 40h each for the sprint. We have 41 tasks: 1 task estimated at 40h and 40 tasks estimated at 1h.
+
+**Option 1:** Angie takes on the 40 small tasks, and Bert takes on the 1 big task, so both will be finished in time.
+
+**Option 2:** Angie and Bert both do 20 of the small tasks each for half of the sprint, and then either of them has to the big task. The sprint gets overbooked by 20h (and one team member is idle for 20h).
+
+Mathematically speaking, these options might be identical (Angie has to use 20h of the next sprint, while Bert is able to finish tasks worth 20h from the next sprint) - for real humans they're not. 
+
+If Angie is doing the big task, she will be disheartened by not being able to finish it on time (yes, even if she should not have been able to) and the meetings at the end of the current sprint and start of the new one will disrupt her work even more. 
+
+Bert's performance will slow down once he realizes he will be idle for the second half of the sprint. 
+
+The entire team's moral will suffer due to lot of sprint changes (adding 20h of tasks for Bert for a 80h sprint is **a lot**). 
+
+So in conclusion the team is better off doing big tasks earlier.
+
+
+### Priority
+
+This simulation does not have a priority for tasks, but it's clear why priority changes the sprint performance: in the above example, what is one possible reason Angie and Bert did the small tasks first? Priority. 
+
+So the bottom line is: since the team and the product owner are already on the same page that the current sprint contains the most important tasks to do right now, the team should be able to do them in any order they wish, so that they might be able to finish the sprint on time.
+
+Will this work? Probably not. 
+
+Most people have a tendency to do small tasks first anyway, because it helps build motivation for bigger tasks. And if there is a chance you won't even need to do the big task, then some might close their eyes and lalala their way through the small tasks.
+
+
 
 # Conclusion
 
-It is not possible to estimate as a team if the actual work performance varies a lot, the team members shame each other from voting a higher time and if nobody checks the individual estimation (instead of the team estimation) versus actual needed time.
+Human psyche is interesting and does not seem to work well with unassigned tasks. It's the [bystander effect](https://en.wikipedia.org/wiki/Bystander_effect) of software development.
+
+From a purely mathematical standpoint, it is not possible to estimate as a team if the actual work performance varies a lot, the team members shame each other from voting a needed higher time and if nobody checks the individual estimations (instead of the team estimation) versus actual needed time.
+
+From the standpoint of someone with management experience, I don't see not pre-assigning tasks working either. The more junior the team, the less this is working. Because junior humans do usually not have the best skills in managing _themselves_ - much less overlooking an entire sprint worth of tasks to figure out what to do in which order.
+
+Additionally, pre-assigning tasks adds an important motivator to the mix: even if the team fails to do sprints on time, I'm able to judge if _I_ did my tasks on time. Every sprint I can improve my estimations and my performance until _I_ am content with _my_ performance - completely independent from what the team is doing. All the while managers can help team members that struggle to finish _their_ sprints on time. 
+
+So in conclusion: pre-assign tasks. It's as easy as that. Give your team members the option to learn to estimate tasks and manage their own workload. Let them earn the praise for finishing their part of the sprint or improving themselves compared to the last sprint. Have shorter meetings where team members won't have to concentrate for hours on end. And most importantly: **finally finish sprints on time.**
+
+---
 
 
 
 # Developer Guide
 
+I tried some stuff out in this project. For myself (and whoever might care), here are some notes that might help me later:
+
 - to see how this project is used, see the [examples](examples/src/main/java/)
 - to run the Vaadin project, run `mvn jetty:run` and open [http://localhost:8080](http://localhost:8080) in browser
 - to see what still needs to be done see the [open issues](https://github.com/slothsoft/sprint-simulation/issues), the [executed tests](http://slothsoft.github.io/sprint-simulation/tests/), and the [code coverage](http://slothsoft.github.io/sprint-simulation/coverage)
 - to update the test documentation run `mvn verify -Pdoc`
+
+This project is connected to
+
+- [Travis](https://travis-ci.com/slothsoft/sprint-simulation), the CI server
+- [Heroku](https://sprint-simulation.herokuapp.com/), where it gets deployed
 
 
 

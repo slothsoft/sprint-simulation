@@ -1,6 +1,7 @@
 package de.slothsoft.sprintsim.app;
 
 import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -30,6 +31,9 @@ public class MainView extends VerticalLayout {
 	private final ResultView resultView;
 
 	public MainView() {
+
+		add(new Html("<html><body><div>" + Messages.getString("SprintSimulationNote") + "</div></body></html>"));
+
 		this.configView = new ConfigView();
 		add(this.configView);
 
