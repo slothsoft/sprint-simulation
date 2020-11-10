@@ -38,7 +38,7 @@ class LoggingSprintsSimulationListener implements SimulationListener {
 		this.members = simulationInfo.getMembers();
 		for (final Member member : this.members) {
 			this.componentWriter.writeLine(MessageFormat.format(Messages.getString("TeamMemberPattern"), //$NON-NLS-1$
-					member.getUserData(LoggingSimulationListener.MEMBER_DATA_NAME), member.getWorkPerformance(),
+					member.getUserData(PrettyNames.DATA_NAME), member.getWorkPerformance(),
 					String.valueOf(member.getWorkHoursPerDay())));
 		}
 		this.componentWriter.writeEmpty();
@@ -84,7 +84,7 @@ class LoggingSprintsSimulationListener implements SimulationListener {
 
 			final TaskWriter taskWriter = new TaskWriter(this.componentWriter);
 			taskWriter.setMemberNameSupplier(
-					index -> (String) this.members[index].getUserData(LoggingSimulationListener.MEMBER_DATA_NAME));
+					index -> (String) this.members[index].getUserData(PrettyNames.DATA_NAME));
 			taskWriter.setTaskNameSupplier(this.taskNameSupplier);
 			taskWriter.writeExecutionInfo(true).setWriteEstimationInfo(true);
 			taskWriter.writeTasks(

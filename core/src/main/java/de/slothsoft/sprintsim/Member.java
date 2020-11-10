@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class Member {
+public class Member implements HasUserData {
 
 	public static final Member createJunior() {
 		return new Member().workPerformance(StandardPerformance.JUNIOR).estimationDeviation(0.5);
@@ -71,8 +71,15 @@ public class Member {
 		this.userData.remove(key);
 	}
 
+	@Override
 	public Object getUserData(String key) {
 		return this.userData.get(key);
 	}
 
+	public Member copy() {
+		final Member copy = new Member().estimationDeviation(this.estimationDeviation)
+				.workHoursPerDay(this.workHoursPerDay).workPerformance(this.workPerformance);
+		copy.userData.putAll(this.userData);
+		return copy;
+	}
 }

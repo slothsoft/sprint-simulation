@@ -1,7 +1,10 @@
 package de.slothsoft.sprintsim.app.config;
 
+import java.util.UUID;
+
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.data.binder.Binder;
 
 import de.slothsoft.sprintsim.config.TaskConfig;
 
@@ -9,34 +12,41 @@ public class TaskConfigView extends FormLayout {
 
 	private static final long serialVersionUID = -8398344286861462479L;
 
-	private final TaskConfig model;
+	public static final String asd = UUID.randomUUID().toString();
 
 	private final IntegerField lowComplexityHours;
 	private final IntegerField mediumComplexityHours;
 	private final IntegerField highComplexityHours;
 
-	public TaskConfigView() {
-		this.model = new TaskConfig();
+	private final Binder<TaskConfig> binder = new Binder<>(TaskConfig.class);
 
+	public TaskConfigView() {
 		this.lowComplexityHours = new IntegerField();
 		this.lowComplexityHours.setLabel(Messages.getString("LowComplexityHours")); //$NON-NLS-1$
-		this.lowComplexityHours.setValue(Integer.valueOf(this.model.getLowComplexityHours()));
 
 		this.mediumComplexityHours = new IntegerField();
 		this.mediumComplexityHours.setLabel(Messages.getString("MediumComplexityHours")); //$NON-NLS-1$
-		this.mediumComplexityHours.setValue(Integer.valueOf(this.model.getMediumComplexityHours()));
 
 		this.highComplexityHours = new IntegerField();
 		this.highComplexityHours.setLabel(Messages.getString("HighComplexityHours")); //$NON-NLS-1$
-		this.highComplexityHours.setValue(Integer.valueOf(this.model.getHighComplexityHours()));
 
 		add(this.lowComplexityHours, this.mediumComplexityHours, this.highComplexityHours);
-		setResponsiveSteps(new ResponsiveStep(ConfigView.INTEGER_FIELD_WIDTH, 3));
+
+		this.binder.setBean(new TaskConfig());
+		this.binder.bindInstanceFields(this);
 	}
 
-	public TaskConfig createConfig() {
-		return this.model.lowComplexityHours(this.lowComplexityHours.getValue().intValue())
-				.mediumComplexityHours(this.mediumComplexityHours.getValue().intValue())
-				.highComplexityHours(this.highComplexityHours.getValue().intValue());
+	public TaskConfig getModel() {
+		return this.binder.getBean();
 	}
+
+	public TaskConfigView model(TaskConfig newModel) {
+		setModel(newModel);
+		return this;
+	}
+
+	public void setModel(TaskConfig model) {
+		this.binder.setBean(model);
+	}
+
 }

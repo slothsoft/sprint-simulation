@@ -10,7 +10,7 @@ public class SprintPlanning {
 	final double estimatedHours;
 	final double estimatedAdditionalHours;
 
-	SprintPlanning(Sprint sprint, double estimatedHours, double estimatedAdditionalHours) {
+	public SprintPlanning(Sprint sprint, double estimatedHours, double estimatedAdditionalHours) {
 		this.sprint = Objects.requireNonNull(sprint);
 		this.estimatedHours = estimatedHours;
 		this.estimatedAdditionalHours = estimatedAdditionalHours;

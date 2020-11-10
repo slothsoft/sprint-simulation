@@ -12,7 +12,7 @@ public class SprintRetro {
 	final double necessaryAdditionalHours;
 	final double remainingHours;
 
-	SprintRetro(Sprint sprint, Member[] members, double necessaryAdditionalHours, double remainingHours) {
+	public SprintRetro(Sprint sprint, Member[] members, double necessaryAdditionalHours, double remainingHours) {
 		this.sprint = Objects.requireNonNull(sprint);
 		this.members = Objects.requireNonNull(members);
 		this.necessaryAdditionalHours = necessaryAdditionalHours;

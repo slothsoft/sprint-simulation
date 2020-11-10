@@ -1,53 +1,86 @@
 package de.slothsoft.sprintsim.app.config;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.accordion.Accordion;
-import com.vaadin.flow.component.accordion.AccordionPanel;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouteAlias;
 
-import de.slothsoft.sprintsim.simulation.Simulation;
+import de.slothsoft.sprintsim.app.HasRunButton;
+import de.slothsoft.sprintsim.app.MainView;
+import de.slothsoft.sprintsim.app.SimulationBuilder;
 
-public class ConfigView extends VerticalLayout {
+@Route(value = "config", layout = MainView.class)
+@RouteAlias(value = "", layout = MainView.class)
+@CssImport("./styles/views/config-view.css")
+@CssImport("./styles/shared.css")
+public class ConfigView extends VerticalLayout implements HasRunButton<Button> {
 
 	private static final long serialVersionUID = 5483344395483796140L;
+
+	private static final String CLASS_CONFIG_PANEL = "config-panel";
 	static final String INTEGER_FIELD_WIDTH = "80em";
 
-	private final MemberConfigView memberConfigView;
+	private final MembersConfigView membersConfigView;
 	private final SprintConfigView sprintConfigView;
 	private final TaskConfigView taskConfigView;
 
+	private SimulationBuilder model;
+
 	public ConfigView() {
-		this.memberConfigView = new MemberConfigView();
-		addExpandablePanel(Messages.getString("MemberConfig"), this.memberConfigView, true);
+		this.membersConfigView = new MembersConfigView();
+		this.membersConfigView.setSizeFull();
+		this.membersConfigView.addClassName(CLASS_CONFIG_PANEL);
+		addPanel(Messages.getString("MembersConfig"), this.membersConfigView);
 
 		this.sprintConfigView = new SprintConfigView();
-		addExpandablePanel(Messages.getString("SprintConfig"), this.sprintConfigView, true);
+		this.sprintConfigView.addClassName(CLASS_CONFIG_PANEL);
+		addPanel(Messages.getString("SprintConfig"), this.sprintConfigView);
 
 		this.taskConfigView = new TaskConfigView();
-		addExpandablePanel(Messages.getString("TaskConfig"), this.taskConfigView, false);
+		this.taskConfigView.addClassName(CLASS_CONFIG_PANEL);
+		addPanel(Messages.getString("TaskConfig"), this.taskConfigView);
+
+		setModel(new SimulationBuilder());
 	}
 
-	private void addExpandablePanel(String title, Component component, boolean open) {
-		final AccordionPanel panel = new AccordionPanel(title, component);
+	private void addPanel(String title, Component component) {
 
-		final Accordion accordion = new Accordion();
-		accordion.setWidthFull();
-		accordion.add(panel);
-		if (open) {
-			accordion.open(panel);
-		} else {
-			accordion.close();
-		}
-		addAndExpand(accordion);
+		final Header header = new Header(new Label(title));
+		add(header);
+		add(component);
 	}
 
-	public Simulation createSimulation() {
-		final Simulation simulation = new Simulation(this.memberConfigView.createMembers());
-		simulation.sprintConfig(this.sprintConfigView.createConfig()).taskConfig(this.taskConfigView.createConfig());
-		return simulation;
+	@Override
+	public Button createRunButton() {
+		final Button runButton = new Button(Messages.getString("RunButton"));
+		runButton.setWidthFull();
+		add(runButton);
+		return runButton;
 	}
 
-	public int fetchNumberOfSprints() {
-		return this.sprintConfigView.fetchNumberOfSprints();
+	public SimulationBuilder getModel() {
+		this.model.setMembers(this.membersConfigView.getModel());
+		this.model.setTaskConfig(this.taskConfigView.getModel());
+		this.model.setSprintConfig(this.sprintConfigView.getModel());
+		this.model.setNumberOfSprints(this.sprintConfigView.getNumberOfSprints());
+		return this.model;
+	}
+
+	public ConfigView model(SimulationBuilder newModel) {
+		setModel(newModel);
+		return this;
+	}
+
+	public void setModel(SimulationBuilder model) {
+		this.model = model;
+
+		this.membersConfigView.setModel(model.getMembers());
+		this.taskConfigView.setModel(model.getTaskConfig());
+		this.sprintConfigView.setModel(model.getSprintConfig());
+		this.sprintConfigView.setNumberOfSprints(model.getNumberOfSprints());
 	}
 }

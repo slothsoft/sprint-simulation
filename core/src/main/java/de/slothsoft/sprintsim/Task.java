@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class Task {
+public class Task implements HasUserData {
 
 	Complexity complexity = Complexity.MEDIUM;
 
@@ -31,6 +31,7 @@ public class Task {
 		this.userData.remove(key);
 	}
 
+	@Override
 	public Object getUserData(String key) {
 		return this.userData.get(key);
 	}

@@ -1,0 +1,21 @@
+#header {
+	height: var(--lumo-size-xl);
+}
+
+#header h1 {
+	font-size: var(--lumo-font-size-l);
+	margin: 0;
+}
+
+#header img#logo {
+	height: var(--lumo-size-l);
+	margin: 0 var(--lumo-space-s);
+}
+
+#header #github {
+	border-radius: 50%;
+	height: var(--lumo-size-s);
+	margin-right: var(--lumo-space-m);
+	overflow: hidden;
+	margin-left: auto;
+}

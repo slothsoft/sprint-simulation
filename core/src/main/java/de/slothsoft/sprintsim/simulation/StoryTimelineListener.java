@@ -96,7 +96,7 @@ public class StoryTimelineListener implements TimelineListener {
 		this.sprintNumber = 0;
 		this.taskCount = 0;
 		this.longestDayInHours = Arrays.stream(members).mapToInt(Member::getWorkHoursPerDay).max().getAsInt();
-		LoggingSimulationListener.appendMemberNames(members);
+		PrettyNames.appendMemberNames(members);
 
 		// log
 
@@ -104,7 +104,7 @@ public class StoryTimelineListener implements TimelineListener {
 
 		for (final Member member : members) {
 			this.componentWriter.writeLine(MessageFormat.format(Messages.getString("TeamMemberPattern"), //$NON-NLS-1$
-					member.getUserData(LoggingSimulationListener.MEMBER_DATA_NAME), member.getWorkPerformance(),
+					member.getUserData(PrettyNames.DATA_NAME), member.getWorkPerformance(),
 					String.valueOf(member.getWorkHoursPerDay())));
 		}
 		this.componentWriter.writeEmpty();
@@ -150,7 +150,7 @@ public class StoryTimelineListener implements TimelineListener {
 		// log
 
 		this.componentWriter.writeLine(MessageFormat.format(Messages.getString("TaskStartedPattern"), //$NON-NLS-1$
-				member.getUserData(LoggingSimulationListener.MEMBER_DATA_NAME), task.getUserData(TASK_DATA_NAME),
+				member.getUserData(PrettyNames.DATA_NAME), task.getUserData(TASK_DATA_NAME),
 				this.numberFormat.format(memberEstimation), this.numberFormat.format(teamEstimation),
 				stringify(event.day, event.hour)));
 	}
@@ -167,7 +167,7 @@ public class StoryTimelineListener implements TimelineListener {
 		// log
 
 		this.componentWriter.writeLine(MessageFormat.format(Messages.getString("TaskFinishedPattern"), //$NON-NLS-1$
-				member.getUserData(LoggingSimulationListener.MEMBER_DATA_NAME), task.getUserData(TASK_DATA_NAME),
+				member.getUserData(PrettyNames.DATA_NAME), task.getUserData(TASK_DATA_NAME),
 				this.numberFormat.format(necessaryHours), stringify(event.day, event.hour)));
 	}
 

@@ -1,63 +1,154 @@
 package de.slothsoft.sprintsim.app;
 
-import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.Html;
-import com.vaadin.flow.component.button.Button;
+import java.util.Optional;
+
+import com.vaadin.flow.component.ClickNotifier;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ComponentUtil;
+import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dependency.JsModule;
+import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.PWA;
-import com.vaadin.flow.theme.Theme;
-import com.vaadin.flow.theme.material.Material;
+import com.vaadin.flow.component.tabs.Tab;
+import com.vaadin.flow.component.tabs.TabVariant;
+import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.router.RouterLink;
 
 import de.slothsoft.sprintsim.app.config.ConfigView;
 import de.slothsoft.sprintsim.app.result.ResultView;
-import de.slothsoft.sprintsim.io.HtmlComponentWriter;
-import de.slothsoft.sprintsim.simulation.LoggingSimulationListener;
 import de.slothsoft.sprintsim.simulation.Simulation;
+import de.slothsoft.sprintsim.simulation.SimulationResult;
 
-/**
- * The main view contains a button and a click listener.
- */
+@JsModule("./styles/shared-styles.js")
+@CssImport(value = "./styles/views/main-view.css", themeFor = "vaadin-app-layout")
+@CssImport("./styles/views/main-view.css")
+@CssImport("./styles/shared.css")
+public class MainView extends AppLayout {
 
-@Route
-@PWA(name = "Sprint Simulation", shortName = "Sprint Simulation")
-@Theme(value = Material.class)
-public class MainView extends VerticalLayout {
+	private static final long serialVersionUID = 7509565421628701090L;
 
-	private static final long serialVersionUID = -6515374665513033293L;
-
-	private final ConfigView configView;
-	private final ResultView resultView;
+	private final Tabs menu;
 
 	public MainView() {
-
-		add(new Html("<html><body><div>" + Messages.getString("SprintSimulationNote") + "</div></body></html>"));
-
-		this.configView = new ConfigView();
-		add(this.configView);
-
-		final HorizontalLayout buttons = new HorizontalLayout();
-		buttons.setWidthFull();
-
-		final Button runButton = new Button(Messages.getString("RunButton"), this::onRunEvent);
-		runButton.setWidthFull();
-		buttons.add(runButton);
-
-		add(buttons);
-
-		this.resultView = new ResultView();
-		add(this.resultView);
+		this.menu = createMenuTabs();
+		addToNavbar(createTopBar(createHeader(), this.menu));
 	}
 
-	@SuppressWarnings("unused")
-	void onRunEvent(ClickEvent<Button> event) {
-		final HtmlComponentWriter writer = new HtmlComponentWriter();
+	private static HorizontalLayout createHeader() {
+		final HorizontalLayout header = new HorizontalLayout();
+		header.setPadding(false);
+		header.setSpacing(false);
+		header.setWidthFull();
+		header.setAlignItems(FlexComponent.Alignment.CENTER);
+		header.setId("header");
 
-		final Simulation simulation = this.configView.createSimulation();
-		simulation.addSimulationListener(new LoggingSimulationListener().componentWriter(writer));
-		simulation.runMilestone(this.configView.fetchNumberOfSprints());
+		final Image logo = new Image("https://avatars2.githubusercontent.com/u/7118092", "slothsoft");
+		logo.setId("logo");
+		header.add(logo);
 
-		this.resultView.setValue(writer.getHtml());
+		header.add(new H1(Messages.getString("SprintSimulationTitle")));
+
+		final Image github = new Image("icons/github.svg", "GitHub");
+		final Anchor githubAnchor = new Anchor("https://github.com/slothsoft/sprint-simulation", github);
+		githubAnchor.setId("github");
+		header.add(githubAnchor);
+
+		return header;
+	}
+
+	private static Tabs createMenuTabs() {
+		final Tabs tabs = new Tabs();
+		tabs.getStyle().set("max-width", "100%");
+		tabs.add(getAvailableTabs());
+		return tabs;
+	}
+
+	private static Tab[] getAvailableTabs() {
+		return new Tab[]{
+
+				createTab(Messages.getString("Config"), ConfigView.class),
+
+				createTab(Messages.getString("RunResult"), ResultView.class),
+
+		};
+	}
+
+	private static Tab createTab(String text, Class<? extends Component> navigationTarget) {
+		final Tab tab = new Tab();
+		tab.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
+		tab.add(new RouterLink(text, navigationTarget));
+		ComponentUtil.setData(tab, Class.class, navigationTarget);
+		return tab;
+	}
+
+	private static VerticalLayout createTopBar(Component... components) {
+		final VerticalLayout layout = new VerticalLayout();
+		layout.getThemeList().add("dark");
+		layout.setWidthFull();
+		layout.setSpacing(false);
+		layout.setPadding(false);
+		layout.setAlignItems(FlexComponent.Alignment.CENTER);
+		layout.add(components);
+		return layout;
+	}
+
+	@Override
+	protected void afterNavigation() {
+		super.afterNavigation();
+
+		final Component content = getContent();
+		getTabForComponent(content).ifPresent(this.menu::setSelectedTab);
+
+		if (content instanceof ConfigView) {
+			((ConfigView) content).setModel(SimulationBuilder.getSimulationInfoForCurrentSession());
+		}
+
+		if (content instanceof HasRunButton) {
+			final HasRunButton<?> hasRunButton = (HasRunButton<?>) content;
+			if (hasRunButton.hasRunButton()) {
+				addListenerToRunButton(hasRunButton.createRunButton());
+			}
+		}
+	}
+
+	private Optional<Tab> getTabForComponent(Component component) {
+		return this.menu.getChildren()
+				.filter(tab -> ComponentUtil.getData(tab, Class.class).equals(component.getClass())).findFirst()
+				.map(Tab.class::cast);
+	}
+
+	private <B extends Component & ClickNotifier<?>> void addListenerToRunButton(B runButton) {
+		runButton.addClickListener(event -> {
+			final SimulationResult simulationResult = runSimulation();
+			ResultView.setResultForCurrentSession(simulationResult);
+
+			final Component content = getContent();
+			if (content instanceof ResultView) {
+				((ResultView) content).setModel(simulationResult);
+			} else {
+				runButton.getUI().ifPresent(ui -> ui.navigate(ResultView.class));
+			}
+		});
+	}
+
+	SimulationResult runSimulation() {
+		final SimulationBuilder builder = fetchSimulationBuilder();
+		SimulationBuilder.setSimulationInfoForCurrentSession(builder);
+
+		final Simulation simulation = builder.createSimulation();
+		return simulation.runMilestone(builder.getNumberOfSprints());
+	}
+
+	private SimulationBuilder fetchSimulationBuilder() {
+		final Component content = getContent();
+		// we have the config open
+		if (content instanceof ConfigView) return ((ConfigView) content).getModel();
+		// we don't have the config, so we take it from the cache
+		return SimulationBuilder.getSimulationInfoForCurrentSession();
 	}
 }

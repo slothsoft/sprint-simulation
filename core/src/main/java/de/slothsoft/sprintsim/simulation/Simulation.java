@@ -51,7 +51,7 @@ public class Simulation {
 			sprintRetros[sprintNumber] = retro;
 		}
 
-		final SimulationResult result = new SimulationResult(sprintPlannings, sprintRetros);
+		final SimulationResult result = new SimulationResult(this.members, sprintPlannings, sprintRetros);
 		fireListeners(listener -> listener.simulationFinished(result));
 		return result;
 	}
